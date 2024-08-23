@@ -18,4 +18,4 @@
 
 如有任何问题，请关注公众号 **Hapince出海日记** 或添加客服微信 **happy_prince45**。
 
-![二维码](images/qr_code.jpg)
+![二维码]([images/qr_code.jpg](https://ninjify.shop/wp-content/uploads/2024/08/cd8c49fbc38ff9698eeb372638a3e8a.jpg))
