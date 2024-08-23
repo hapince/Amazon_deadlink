@@ -3,7 +3,7 @@ import pandas as pd
 from utils import google_search, bing_search
 
 def main():
-    st.title("亚马逊僵尸链接查询工具 - Hapince出海专供")
+    st.title("亚马逊僵尸链接查询工具 - Hapince出海专供（试用版本）")
 
     st.sidebar.subheader("搜索设置")
     search_engine = st.sidebar.selectbox("选择搜索引擎", ["Google", "Bing"])
@@ -29,15 +29,6 @@ def main():
         else:
             st.write("未找到相关结果")
 
-    if st.sidebar.button("导出结果到 Excel"):
-        if results:
-            df = pd.DataFrame(results, columns=["Title", "Link"])
-            file_name = f"search_results_{amazon_site}_{keyword}.xlsx"
-            df.to_excel(file_name, index=False)
-            st.success(f"结果已导出到 `{file_name}`")
-            st.download_button("下载 Excel 文件", data=open(file_name, "rb").read(), file_name=file_name, mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-        else:
-            st.warning("没有结果可导出")
 
     st.sidebar.subheader("联系方式")
     st.sidebar.write("关注公众号“Hapince出海日记”")
