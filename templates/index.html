@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>欢迎使用搜索工具</h1>
+        <p>请从下面选择一个搜索引擎:</p>
+        <button onclick="window.location.href='/search?search_engine=Google'">Google</button>
+        <button onclick="window.location.href='/search?search_engine=Bing'">Bing</button>
+        <div class="info">
+            <p>如有任何问题请关注公众号“Hapince出海日记”或者添加客服微信happy_prince45</p>
+            <img src="https://ninjify.shop/wp-content/uploads/2024/08/cd8c49fbc38ff9698eeb372638a3e8a.jpg" alt="Info Image">
+        </div>
+    </div>
+</body>
+</html>
