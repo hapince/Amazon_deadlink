@@ -34,5 +34,24 @@ def main():
     st.sidebar.write("关注公众号“Hapince出海日记”")
     st.sidebar.write("或添加客服微信：happy_prince45")
 
+def check_password():
+    """Returns `True` if the user enters the correct password."""
+    st.sidebar.subheader("用户认证")
+    password = st.sidebar.text_input("请输入密码", type="password")
+    if st.sidebar.button("提交"):
+        if password == "your_password_here":  # Replace with your actual password
+            return True
+        else:
+            st.sidebar.error("密码错误，请重试")
+            return False
+    return False
+
+if __name__ == "__main__":
+    if check_password():
+        main()
+    else:
+        st.warning("请输入正确的密码以访问该工具")
+
+        
 if __name__ == "__main__":
     main()
