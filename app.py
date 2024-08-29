@@ -5,6 +5,7 @@ from utils import google_search, bing_search
 def main():
     st.title("亚马逊僵尸链接查询工具 - Hapince出海专供（试用版本）")
     st.write("移动端用户请点击左上角“>”开始使用")
+    st.write("添加微信：happy_prince45以获取全功能软件，<br>查询链接条数无限制，")
     st.subheader("搜索设置")
     search_engine = st.selectbox("选择搜索引擎", ["Google", "Bing"])
     amazon_site = st.selectbox("选择亚马逊站点", [
@@ -14,7 +15,7 @@ def main():
     keyword = st.text_input("输入关键词")
 
     if st.button("搜索"):
-        st.subheader(f"搜索结果 ({search_engine})")
+        st.subheader(f"搜索结果-试用版限制10条 ({search_engine})")
         page = 0
         results = []
 
