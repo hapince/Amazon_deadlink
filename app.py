@@ -53,3 +53,4 @@ if __name__ == "__main__":
         main()
     else:
         st.warning("由于服务器资源有限，为避免不必要流量，请关注微信公众号“Hapince出海日记”获取密码")
+        st.image("image/wechatgroup.jpg")

@@ -1,9 +1,0 @@
-{% for result in results %}
-    <div class="result-item">
-        <h2><a href="{{ result.link }}" target="_blank">{{ result.title }}</a></h2>
-        <p><a href="{{ result.link }}" target="_blank">{{ result.link }}</a></p>
-        {% if result.img_url %}
-            <img src="{{ result.img_url }}" alt="Result Image">
-        {% endif %}
-    </div>
-{% endfor %}
