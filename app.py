@@ -51,4 +51,4 @@ if __name__ == "__main__":
     if check_password():
         main()
     else:
-        st.warning("请输入正确的密码以访问该工具")
+        st.warning("由于服务器资源有限，为避免不必要流量，请关注微信公众号“Hapince出海日记”获取密码")
