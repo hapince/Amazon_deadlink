@@ -3,8 +3,8 @@ import pandas as pd
 from utils import google_search, bing_search
 
 def main():
-    st.title("亚马逊僵尸链接查询工具 - Hapince出海专供（试用版本）")
-
+    st.title("亚马逊僵尸链接采集工具 - （试用）")
+    st.write("移动端用户请点击左上角“>”开始使用")
     st.sidebar.subheader("搜索设置")
     search_engine = st.sidebar.selectbox("选择搜索引擎", ["Google", "Bing"])
     amazon_site = st.sidebar.selectbox("选择亚马逊站点", [
