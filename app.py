@@ -35,15 +35,17 @@ def main():
 
 def check_password():
     """Returns `True` if the user enters the correct password."""
-    st.sidebar.subheader("用户认证")
-    password = st.sidebar.text_input("请输入密码", type="password")
-    if st.sidebar.button("提交"):
-        if password == "happyprince":  # Set password to 'happyprince'
-            return True
-        else:
-            st.sidebar.error("密码错误，请重试")
-            return False
-    return False
+    if "password_correct" not in st.session_state:
+        st.sidebar.subheader("用户认证")
+        password = st.sidebar.text_input("请输入密码", type="password")
+        if st.sidebar.button("提交"):
+            if password == "happyprince":  # Set password to 'happyprince'
+                st.session_state.password_correct = True
+            else:
+                st.sidebar.error("密码错误，请重试")
+                st.session_state.password_correct = False
+
+    return st.session_state.get("password_correct", False)
 
 if __name__ == "__main__":
     if check_password():
