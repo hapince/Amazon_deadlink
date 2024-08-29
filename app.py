@@ -3,7 +3,7 @@ import pandas as pd
 from utils import google_search, bing_search
 
 def main():
-    st.title("亚马逊僵尸链接查询工具 - Hapince出海专供（试用版本）")
+    st.title("亚马逊僵尸链接查询工具 - （试用版本）")
     st.write("移动端用户请点击左上角“>”开始使用")
     st.write("添加微信“happy_prince45获取全功能僵尸链接采集软件”。1.查询链接条数无限制2.查询结果包含品牌评分3.可以一件导出asin4.多站点查询.......")
     st.subheader("搜索设置")
