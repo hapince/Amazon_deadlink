@@ -29,7 +29,6 @@ def main():
         else:
             st.write("未找到相关结果")
 
-
     st.sidebar.subheader("联系方式")
     st.sidebar.write("关注公众号“Hapince出海日记”")
     st.sidebar.write("或添加客服微信：happy_prince45")
