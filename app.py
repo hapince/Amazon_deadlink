@@ -39,7 +39,7 @@ def check_password():
     st.sidebar.subheader("用户认证")
     password = st.sidebar.text_input("请输入密码", type="password")
     if st.sidebar.button("提交"):
-        if password == "your_password_here":  147369;   # Replace with your actual password
+        if password == "happyprince":  # Set password to 'happyprince'
             return True
         else:
             st.sidebar.error("密码错误，请重试")
@@ -51,7 +51,3 @@ if __name__ == "__main__":
         main()
     else:
         st.warning("请输入正确的密码以访问该工具")
-
-        
-if __name__ == "__main__":
-    main()
