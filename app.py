@@ -15,7 +15,7 @@ USER_AGENTS = [
     'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0'
 ]
 
-DEFAULT_IMAGE_PATH = "image/logo.jpg"  # Path to default image
+DEFAULT_IMAGE_PATH = "Cong-zz1/Amazon_deadlink/image/logo.jpg"  # Path to default image
 
 def get_random_user_agent():
     """Return a random User-Agent from the list."""
