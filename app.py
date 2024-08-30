@@ -26,14 +26,14 @@ def extract_asin(url):
             return asin_part
     return None
 
-def fetch_all_results(search_engine, keyword, amazon_site, max_pages=10):
-    """Fetch results from all pages until no more results or max_pages is reached."""
+def fetch_all_results(search_engine, keyword, amazon_site, max_links=50):
+    """Fetch results until the desired number of links is reached."""
     page = 0
     all_results = []
     
     progress_bar = st.progress(0)  # Initialize progress bar
 
-    while page < max_pages:
+    while len(all_results) < max_links:
         # Set a random delay to mimic human behavior
         delay = random.uniform(2, 5)
         time.sleep(delay)
@@ -51,8 +51,12 @@ def fetch_all_results(search_engine, keyword, amazon_site, max_pages=10):
 
         all_results.extend(results)
         
+        # If more results than needed, truncate the list
+        if len(all_results) > max_links:
+            all_results = all_results[:max_links]
+        
         # Update progress bar
-        progress = (page + 1) / max_pages
+        progress = len(all_results) / max_links
         progress_bar.progress(progress)
         
         page += 1
@@ -63,7 +67,7 @@ def fetch_all_results(search_engine, keyword, amazon_site, max_pages=10):
 
 def main():
     st.title("亚马逊僵尸链接查询工具")
-    st.write("遇到问题联系：happy_prince45")
+    st.write("遇到问题联系：happy_pzzzzz")
     st.subheader("搜索设置")
     search_engine = st.selectbox("选择搜索引擎", ["Google", "Bing"])
     amazon_site = st.selectbox("选择亚马逊站点", [
@@ -71,11 +75,11 @@ def main():
         "www.amazon.in", "www.amazon.sg", "www.amazon.ae"
     ])
     keyword = st.text_input("输入关键词")
-    max_pages = st.slider("查询页数限制", 1, 2, 1)  # Allow user to set maximum number of pages to fetch
+    max_links = st.slider("查询链接数限制", 10, 200, 50)  # Allow user to set maximum number of links to fetch
 
     if st.button("搜索"):
         # Fetch results from all pages
-        all_results = fetch_all_results(search_engine, keyword, amazon_site, max_pages)
+        all_results = fetch_all_results(search_engine, keyword, amazon_site, max_links)
 
         if all_results:
             # Filter out links containing 'sellercentral'
