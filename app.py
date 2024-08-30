@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from io import BytesIO
 from utils import google_search, bing_search
 
 def extract_asin(url):
@@ -32,8 +33,8 @@ def fetch_all_results(search_engine, keyword, amazon_site, max_pages=10):
     return all_results
 
 def main():
-    st.title("亚马逊僵尸链接查询工具")
-    st.write("遇到问题请添加微信：happy_prince45获取帮助")
+    st.title("亚马逊僵尸链接查询工具 - （试用版本）")
+    st.write("添加微信“happy_prince45获取全功能僵尸链接采集软件”。1.查询链接条数无限制2.查询结果包含品牌评分3.可以一件导出asin4.多站点查询.......")
     st.subheader("搜索设置")
     search_engine = st.selectbox("选择搜索引擎", ["Google", "Bing"])
     amazon_site = st.selectbox("选择亚马逊站点", [
@@ -64,25 +65,24 @@ def main():
                 st.subheader(f"搜索结果-试用版限制{len(filtered_results)}条 ({search_engine})")
                 for i, result in enumerate(st.session_state.results, start=1):
                     st.markdown(f"**{i}. [{result['Title']}]({result['URL']})**")
+                
+                # Prepare DataFrame for download
+                df = pd.DataFrame(st.session_state.results)
+                excel_buffer = BytesIO()
+                df.to_excel(excel_buffer, index=False, engine='xlsxwriter')
+                excel_buffer.seek(0)
+
+                # Download button for the Excel file
+                st.download_button(
+                    label="导出并下载Excel",
+                    data=excel_buffer,
+                    file_name="search_results.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
             else:
                 st.write("未找到相关结果（已排除包含'sellercentral'的链接）")
         else:
             st.write("未找到相关结果")
-
-    if "results" in st.session_state and st.session_state.results:
-        # Show option to export results
-        if st.button("导出为Excel"):
-            df = pd.DataFrame(st.session_state.results)
-            excel_file = "search_results.xlsx"
-            df.to_excel(excel_file, index=False)
-            st.success(f"导出成功！文件名：{excel_file}")
-            # Provide a download link
-            st.download_button(
-                label="点击下载",
-                data=open(excel_file, "rb").read(),
-                file_name=excel_file,
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            )
 
     st.subheader("联系方式")
     st.write("关注公众号“Hapince出海日记”")
