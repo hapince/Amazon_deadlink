@@ -8,7 +8,7 @@ def extract_asin(url):
     if "dp/" in url:
         parts = url.split("dp/")
         if len(parts) > 1:
-            asin_part = parts[1].split('/')[0]
+            asin_part = parts[1].split('/')[0][:10]  # Extract only the first 10 characters
             return asin_part
     return None
 
