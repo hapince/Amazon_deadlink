@@ -15,6 +15,8 @@ USER_AGENTS = [
     'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0'
 ]
 
+DEFAULT_IMAGE_PATH = "image/logo.jpg"  # Path to default image
+
 def get_random_user_agent():
     """Return a random User-Agent from the list."""
     return random.choice(USER_AGENTS)
@@ -113,7 +115,8 @@ def main():
                 for title, link in filtered_results:
                     asin = extract_asin(link)
                     image_url = extract_image_url(asin) if asin else None
-                    image_tag = f'<img src="{image_url}" width="100"/>' if image_url else '无图片'
+                    # Use default image if no image found
+                    image_tag = f'<img src="{image_url}" style="width:100px;height:100px;object-fit:cover;"/>' if image_url else f'<img src="{DEFAULT_IMAGE_PATH}" style="width:100px;height:100px;object-fit:cover;"/>'
                     st.session_state.results.append({"Image": image_tag, "Title": title, "URL": link, "ASIN": asin})
 
                 st.subheader(f"搜索结果-试用版限制{max_links}条，如果要取消限制，请联系管理员")
