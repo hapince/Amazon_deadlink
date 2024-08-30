@@ -23,32 +23,39 @@ def main():
     keyword = st.text_input("输入关键词")
 
     if st.button("搜索"):
-        st.subheader(f"搜索结果-试用版限制10条 ({search_engine})")
         page = 0
-        results = []
-
         if search_engine == "Google":
             results = google_search(keyword, amazon_site, page)
         elif search_engine == "Bing":
             results = bing_search(keyword, amazon_site, page)
 
         if results:
-            # Create a DataFrame to store results and ASINs
-            data = []
-            for i, (title, link) in enumerate(results, start=1):
+            # Store results in session state
+            st.session_state.results = []
+            for title, link in results:
                 asin = extract_asin(link)
-                data.append([title, link, asin])
-                st.markdown(f"**{i}. [{title}]({link})**")
-            
-            # Show option to export results
-            if st.button("导出为Excel"):
-                df = pd.DataFrame(data, columns=["Title", "URL", "ASIN"])
-                excel_file = "search_results.xlsx"
-                df.to_excel(excel_file, index=False)
-                st.success(f"导出成功！文件名：{excel_file}")
+                st.session_state.results.append({"Title": title, "URL": link, "ASIN": asin})
 
+            st.subheader(f"搜索结果-试用版限制10条 ({search_engine})")
+            for i, result in enumerate(st.session_state.results, start=1):
+                st.markdown(f"**{i}. [{result['Title']}]({result['URL']})**")
         else:
             st.write("未找到相关结果")
+
+    if "results" in st.session_state and st.session_state.results:
+        # Show option to export results
+        if st.button("导出为Excel"):
+            df = pd.DataFrame(st.session_state.results)
+            excel_file = "search_results.xlsx"
+            df.to_excel(excel_file, index=False)
+            st.success(f"导出成功！文件名：{excel_file}")
+            # Provide a download link
+            st.download_button(
+                label="点击下载",
+                data=open(excel_file, "rb").read(),
+                file_name=excel_file,
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
 
     st.subheader("联系方式")
     st.write("关注公众号“Hapince出海日记”")
