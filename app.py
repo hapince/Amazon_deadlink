@@ -138,7 +138,7 @@ def main():
 
     st.subheader("联系方式")
     st.write("关注公众号“Hapince出海日记”")
-    st.write("或添加客服微信：happy_prince45")
+    st.image("image/publicwechat.jpg")
 
 def check_password():
     """Returns `True` if the user enters the correct password."""
