@@ -110,18 +110,23 @@ def main():
                 for title, link in filtered_results:
                     asin = extract_asin(link)
                     image_url = extract_image_url(asin) if asin else None
-                    st.session_state.results.append({"Title": title, "URL": link, "ASIN": asin, "Image URL": image_url})
+                    st.session_state.results.append({"Image": image_url, "Title": title, "URL": link, "ASIN": asin})
 
                 st.subheader(f"搜索结果-试用版限制{max_links}条，如果要取消限制，请联系管理员")
-                for i, result in enumerate(st.session_state.results, start=1):
-                    st.markdown(f"**{i}. [{result['Title']}]({result['URL']})**")
-                    if result['Image URL']:
-                        st.image(result['Image URL'], caption=f"ASIN: {result['ASIN']}", use_column_width=True)
                 
-                # Prepare DataFrame for download
-                df = pd.DataFrame(st.session_state.results)
+                # Display results in table format
+                results_df = pd.DataFrame(st.session_state.results)
+                results_df['Image'] = results_df['Image'].apply(lambda url: f'<img src="{url}" width="100"/>')
+                results_df['Title'] = results_df.apply(lambda row: f'<a href="{row["URL"]}">{row["Title"]}</a>', axis=1)
+                results_df = results_df[['Image', 'Title', 'ASIN']]  # Arrange columns as required
+                
+                st.markdown(results_df.to_html(escape=False, index=False), unsafe_allow_html=True)
+                
+                # Prepare DataFrame for download (without Image URL)
+                download_df = results_df[['Title', 'ASIN']].copy()
+                download_df['URL'] = [result['URL'] for result in st.session_state.results]
                 excel_buffer = BytesIO()
-                df.to_excel(excel_buffer, index=False, engine='openpyxl')
+                download_df.to_excel(excel_buffer, index=False, engine='openpyxl')
                 excel_buffer.seek(0)
 
                 # Download button for the Excel file
@@ -138,7 +143,7 @@ def main():
 
     st.subheader("联系方式")
     st.write("关注公众号“Hapince出海日记”")
-    st.image("image/publicwechat.jpg")
+    st.write("或添加客服微信：happy_prince45")
 
 def check_password():
     """Returns `True` if the user enters the correct password."""
