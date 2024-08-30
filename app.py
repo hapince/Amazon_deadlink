@@ -35,8 +35,11 @@ def extract_image_url(asin):
     response = requests.get(product_url, headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
     
-    # Find the image URL
-    img_tag = soup.find('img', {'id': 'landingImage'})
+    # Find the image URL using different strategies
+    img_tag = soup.find('img', {'id': 'landingImage'})  # Main product image
+    if not img_tag:
+        img_tag = soup.find('img', {'class': 'a-dynamic-image'})  # Another common class for images
+    
     if img_tag and 'src' in img_tag.attrs:
         return img_tag['src']
     
@@ -110,13 +113,13 @@ def main():
                 for title, link in filtered_results:
                     asin = extract_asin(link)
                     image_url = extract_image_url(asin) if asin else None
-                    st.session_state.results.append({"Image": image_url, "Title": title, "URL": link, "ASIN": asin})
+                    image_tag = f'<img src="{image_url}" width="100"/>' if image_url else '无图片'
+                    st.session_state.results.append({"Image": image_tag, "Title": title, "URL": link, "ASIN": asin})
 
                 st.subheader(f"搜索结果-试用版限制{max_links}条，如果要取消限制，请联系管理员")
                 
                 # Display results in table format
                 results_df = pd.DataFrame(st.session_state.results)
-                results_df['Image'] = results_df['Image'].apply(lambda url: f'<img src="{url}" width="100"/>')
                 results_df['Title'] = results_df.apply(lambda row: f'<a href="{row["URL"]}">{row["Title"]}</a>', axis=1)
                 results_df = results_df[['Image', 'Title', 'ASIN']]  # Arrange columns as required
                 
