@@ -34,6 +34,7 @@ def fetch_all_results(search_engine, keyword, amazon_site, max_pages=10):
 
 def main():
     st.title("亚马逊僵尸链接查询工具 - （试用版本）")
+    st.write("添加微信“happy_prince45获取全功能僵尸链接采集软件”。1.查询链接条数无限制2.查询结果包含品牌评分3.可以一件导出asin4.多站点查询.......")
     st.subheader("搜索设置")
     search_engine = st.selectbox("选择搜索引擎", ["Google", "Bing"])
     amazon_site = st.selectbox("选择亚马逊站点", [
@@ -93,7 +94,7 @@ def check_password():
         st.subheader("用户认证")
         password = st.text_input("请输入密码", type="password")
         if st.button("提交"):
-            if password == "happyprince111":  # Set password to 'happyprince'
+            if password == "happyprince":  # Set password to 'happyprince'
                 st.session_state.password_correct = True
             else:
                 st.error("密码错误，请重试")
