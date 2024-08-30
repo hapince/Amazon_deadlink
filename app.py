@@ -95,7 +95,7 @@ def main():
                     asin = extract_asin(link)
                     st.session_state.results.append({"Title": title, "URL": link, "ASIN": asin})
 
-                st.subheader(f"搜索结果-试用版限制15条，如果要取消限制，请联系管理员")
+                st.subheader(f"搜索结果-试用版限制{max_links}条，如果要取消限制，请联系管理员")
                 for i, result in enumerate(st.session_state.results, start=1):
                     st.markdown(f"**{i}. [{result['Title']}]({result['URL']})**")
                 
