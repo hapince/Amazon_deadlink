@@ -69,7 +69,7 @@ def main():
                 # Prepare DataFrame for download
                 df = pd.DataFrame(st.session_state.results)
                 excel_buffer = BytesIO()
-                df.to_excel(excel_buffer, index=False, engine='xlsxwriter')
+                df.to_excel(excel_buffer, index=False, engine='openpyxl')
                 excel_buffer.seek(0)
 
                 # Download button for the Excel file
