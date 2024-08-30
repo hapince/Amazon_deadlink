@@ -11,26 +11,6 @@ def extract_asin(url):
             return asin_part
     return None
 
-def fetch_all_results(search_engine, keyword, amazon_site, max_pages=10):
-    """Fetch results from all pages until no more results or max_pages is reached."""
-    page = 0
-    all_results = []
-    
-    while page < max_pages:
-        if search_engine == "Google":
-            results = google_search(keyword, amazon_site, page)
-        elif search_engine == "Bing":
-            results = bing_search(keyword, amazon_site, page)
-        
-        # If no more results are found, break the loop
-        if not results:
-            break
-
-        all_results.extend(results)
-        page += 1
-    
-    return all_results
-
 def main():
     st.title("亚马逊僵尸链接查询工具 - （试用版本）")
     st.write("添加微信“happy_prince45获取全功能僵尸链接采集软件”。1.查询链接条数无限制2.查询结果包含品牌评分3.可以一件导出asin4.多站点查询.......")
@@ -41,16 +21,18 @@ def main():
         "www.amazon.in", "www.amazon.sg", "www.amazon.ae"
     ])
     keyword = st.text_input("输入关键词")
-    max_pages = st.slider("查询页数限制", 1, 20, 10)  # Allow user to set maximum number of pages to fetch
 
     if st.button("搜索"):
-        # Fetch results from all pages
-        all_results = fetch_all_results(search_engine, keyword, amazon_site, max_pages)
+        page = 0
+        if search_engine == "Google":
+            results = google_search(keyword, amazon_site, page)
+        elif search_engine == "Bing":
+            results = bing_search(keyword, amazon_site, page)
 
-        if all_results:
+        if results:
             # Filter out links containing 'sellercentral'
             filtered_results = [
-                (title, link) for title, link in all_results 
+                (title, link) for title, link in results 
                 if "sellercentral" not in link
             ]
 
@@ -61,7 +43,7 @@ def main():
                     asin = extract_asin(link)
                     st.session_state.results.append({"Title": title, "URL": link, "ASIN": asin})
 
-                st.subheader(f"搜索结果-试用版限制{len(filtered_results)}条 ({search_engine})")
+                st.subheader(f"搜索结果-试用版限制10条 ({search_engine})")
                 for i, result in enumerate(st.session_state.results, start=1):
                     st.markdown(f"**{i}. [{result['Title']}]({result['URL']})**")
             else:
