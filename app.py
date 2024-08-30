@@ -2,15 +2,6 @@ import streamlit as st
 import pandas as pd
 from utils import google_search, bing_search
 
-def extract_asin(url):
-    """Extract ASIN from Amazon product URL."""
-    if "dp/" in url:
-        parts = url.split("dp/")
-        if len(parts) > 1:
-            asin_part = parts[1].split('/')[0]
-            return asin_part
-    return None
-
 def main():
     st.title("亚马逊僵尸链接查询工具 - （试用版本）")
     st.write("添加微信“happy_prince45获取全功能僵尸链接采集软件”。1.查询链接条数无限制2.查询结果包含品牌评分3.可以一件导出asin4.多站点查询.......")
@@ -33,20 +24,8 @@ def main():
             results = bing_search(keyword, amazon_site, page)
 
         if results:
-            # Create a DataFrame to store results and ASINs
-            data = []
             for i, (title, link) in enumerate(results, start=1):
-                asin = extract_asin(link)
-                data.append([title, link, asin])
                 st.markdown(f"**{i}. [{title}]({link})**")
-            
-            # Show option to export results
-            if st.button("导出为Excel"):
-                df = pd.DataFrame(data, columns=["Title", "URL", "ASIN"])
-                excel_file = "search_results.xlsx"
-                df.to_excel(excel_file, index=False)
-                st.success(f"导出成功！文件名：{excel_file}")
-
         else:
             st.write("未找到相关结果")
 
@@ -55,7 +34,7 @@ def main():
     st.write("或添加客服微信：happy_prince45")
 
 def check_password():
-    """Returns `True` if the user enters the correct password."""
+    """Returns True if the user enters the correct password."""
     if "password_correct" not in st.session_state:
         st.subheader("用户认证")
         password = st.text_input("请输入密码", type="password")
