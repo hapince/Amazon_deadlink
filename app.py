@@ -30,24 +30,15 @@ def main():
             results = bing_search(keyword, amazon_site, page)
 
         if results:
-            # Filter out links containing 'sellercentral'
-            filtered_results = [
-                (title, link) for title, link in results 
-                if "sellercentral" not in link
-            ]
+            # Store results in session state
+            st.session_state.results = []
+            for title, link in results:
+                asin = extract_asin(link)
+                st.session_state.results.append({"Title": title, "URL": link, "ASIN": asin})
 
-            if filtered_results:
-                # Store filtered results in session state
-                st.session_state.results = []
-                for title, link in filtered_results:
-                    asin = extract_asin(link)
-                    st.session_state.results.append({"Title": title, "URL": link, "ASIN": asin})
-
-                st.subheader(f"搜索结果-试用版限制10条 ({search_engine})")
-                for i, result in enumerate(st.session_state.results, start=1):
-                    st.markdown(f"**{i}. [{result['Title']}]({result['URL']})**")
-            else:
-                st.write("未找到相关结果（已排除包含'sellercentral'的链接）")
+            st.subheader(f"搜索结果-试用版限制10条 ({search_engine})")
+            for i, result in enumerate(st.session_state.results, start=1):
+                st.markdown(f"**{i}. [{result['Title']}]({result['URL']})**")
         else:
             st.write("未找到相关结果")
 
