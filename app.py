@@ -122,7 +122,7 @@ def main():
                 # Display results in table format
                 results_df = pd.DataFrame(st.session_state.results)
                 results_df['Title'] = results_df.apply(lambda row: f'<a href="{row["URL"]}">{row["Title"]}</a>', axis=1)
-                results_df = results_df[['Image', 'Title', 'ASIN']]  # Arrange columns as required
+                results_df = results_df[['图片', '僵尸链接', '产品ASIN']]  # Arrange columns as required
                 
                 st.markdown(results_df.to_html(escape=False, index=False), unsafe_allow_html=True)
                 
