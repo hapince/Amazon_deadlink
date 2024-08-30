@@ -2,29 +2,17 @@ import requests
 from bs4 import BeautifulSoup
 import urllib.parse
 
-def google_search(keyword, site, page=0):
+def google_search(keyword, site, page=0, headers=None):
     search_results = []
     query = f'site:{site} "We don\'t know when or if this item will be back in stock." {keyword}'
     search_url = f'https://www.google.com/search?q={urllib.parse.quote(query)}&start={page * 10}'
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-    }
+    
+    if headers is None:
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
     
     response = requests.get(search_url, headers=headers)
-    
-    # Check if the request was successful
-    if response.status_code != 200:
-        print(f"Google search failed with status code {response.status_code}")
-        return search_results
-    
-    # Check for CAPTCHA or blocking
-    if "To continue, please verify that you are not a robot" in response.text:
-        print("Google CAPTCHA detected. Unable to fetch results.")
-        return search_results
-    
-    # Parse the response content
     soup = BeautifulSoup(response.text, 'html.parser')
-    
+
     for g in soup.find_all('div', class_='g'):
         anchors = g.find_all('a')
         if anchors:
@@ -34,24 +22,17 @@ def google_search(keyword, site, page=0):
 
     return search_results
 
-def bing_search(keyword, site, page=0):
+def bing_search(keyword, site, page=0, headers=None):
     search_results = []
     query = f'site:{site} "We don\'t know when or if this item will be back in stock." {keyword}'
     search_url = f'https://www.bing.com/search?q={urllib.parse.quote(query)}&first={page * 10 + 1}'
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-    }
+    
+    if headers is None:
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
     
     response = requests.get(search_url, headers=headers)
-    
-    # Check if the request was successful
-    if response.status_code != 200:
-        print(f"Bing search failed with status code {response.status_code}")
-        return search_results
-    
-    # Parse the response content
     soup = BeautifulSoup(response.text, 'html.parser')
-    
+
     for li in soup.find_all('li', class_='b_algo'):
         h2 = li.find('h2')
         if h2:
