@@ -62,8 +62,8 @@ def fetch_all_results(search_engine, keyword, amazon_site, max_pages=10):
     return all_results
 
 def main():
-    st.title("亚马逊僵尸链接查询工具 - （试用版本）")
-    st.write("添加微信“happy_prince45获取全功能僵尸链接采集软件”。1.查询链接条数无限制2.查询结果包含品牌评分3.可以一件导出asin4.多站点查询.......")
+    st.title("亚马逊僵尸链接查询工具")
+    st.write("遇到问题联系：happy_prince45")
     st.subheader("搜索设置")
     search_engine = st.selectbox("选择搜索引擎", ["Google", "Bing"])
     amazon_site = st.selectbox("选择亚马逊站点", [
@@ -71,7 +71,7 @@ def main():
         "www.amazon.in", "www.amazon.sg", "www.amazon.ae"
     ])
     keyword = st.text_input("输入关键词")
-    max_pages = st.slider("查询页数限制", 1, 20, 10)  # Allow user to set maximum number of pages to fetch
+    max_pages = st.slider("查询页数限制", 1, 2, 1)  # Allow user to set maximum number of pages to fetch
 
     if st.button("搜索"):
         # Fetch results from all pages
