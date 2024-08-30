@@ -3,6 +3,8 @@ import pandas as pd
 from io import BytesIO
 import time
 import random
+import requests
+from bs4 import BeautifulSoup
 from utils import google_search, bing_search
 
 # List of user agents to randomize the header for each request
@@ -24,6 +26,20 @@ def extract_asin(url):
         if len(parts) > 1:
             asin_part = parts[1].split('/')[0][:10]  # Extract only the first 10 characters
             return asin_part
+    return None
+
+def extract_image_url(asin):
+    """Extract the main image URL from the Amazon product page."""
+    headers = {'User-Agent': get_random_user_agent()}
+    product_url = f"https://www.amazon.com/dp/{asin}"
+    response = requests.get(product_url, headers=headers)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    # Find the image URL
+    img_tag = soup.find('img', {'id': 'landingImage'})
+    if img_tag and 'src' in img_tag.attrs:
+        return img_tag['src']
+    
     return None
 
 def fetch_all_results(search_engine, keyword, amazon_site, max_links=50):
@@ -93,11 +109,14 @@ def main():
                 st.session_state.results = []
                 for title, link in filtered_results:
                     asin = extract_asin(link)
-                    st.session_state.results.append({"Title": title, "URL": link, "ASIN": asin})
+                    image_url = extract_image_url(asin) if asin else None
+                    st.session_state.results.append({"Title": title, "URL": link, "ASIN": asin, "Image URL": image_url})
 
                 st.subheader(f"搜索结果-试用版限制{max_links}条，如果要取消限制，请联系管理员")
                 for i, result in enumerate(st.session_state.results, start=1):
                     st.markdown(f"**{i}. [{result['Title']}]({result['URL']})**")
+                    if result['Image URL']:
+                        st.image(result['Image URL'], caption=f"ASIN: {result['ASIN']}", use_column_width=True)
                 
                 # Prepare DataFrame for download
                 df = pd.DataFrame(st.session_state.results)
