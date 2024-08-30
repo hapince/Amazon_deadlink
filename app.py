@@ -1,6 +1,65 @@
 import streamlit as st
 import pandas as pd
+from io import BytesIO
+import time
+import random
 from utils import google_search, bing_search
+
+# List of user agents to randomize the header for each request
+USER_AGENTS = [
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.54',
+    'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0'
+]
+
+def get_random_user_agent():
+    """Return a random User-Agent from the list."""
+    return random.choice(USER_AGENTS)
+
+def extract_asin(url):
+    """Extract ASIN from Amazon product URL."""
+    if "dp/" in url:
+        parts = url.split("dp/")
+        if len(parts) > 1:
+            asin_part = parts[1].split('/')[0][:10]  # Extract only the first 10 characters
+            return asin_part
+    return None
+
+def fetch_all_results(search_engine, keyword, amazon_site, max_pages=10):
+    """Fetch results from all pages until no more results or max_pages is reached."""
+    page = 0
+    all_results = []
+    
+    progress_bar = st.progress(0)  # Initialize progress bar
+
+    while page < max_pages:
+        # Set a random delay to mimic human behavior
+        delay = random.uniform(2, 5)
+        time.sleep(delay)
+        
+        if search_engine == "Google":
+            headers = {'User-Agent': get_random_user_agent()}
+            results = google_search(keyword, amazon_site, page, headers=headers)
+        elif search_engine == "Bing":
+            headers = {'User-Agent': get_random_user_agent()}
+            results = bing_search(keyword, amazon_site, page, headers=headers)
+        
+        # If no more results are found, break the loop
+        if not results:
+            break
+
+        all_results.extend(results)
+        
+        # Update progress bar
+        progress = (page + 1) / max_pages
+        progress_bar.progress(progress)
+        
+        page += 1
+
+    progress_bar.progress(1.0)  # Ensure the progress bar reaches 100%
+    
+    return all_results
 
 def main():
     st.title("亚马逊僵尸链接查询工具 - （试用版本）")
@@ -12,20 +71,45 @@ def main():
         "www.amazon.in", "www.amazon.sg", "www.amazon.ae"
     ])
     keyword = st.text_input("输入关键词")
+    max_pages = st.slider("查询页数限制", 1, 20, 10)  # Allow user to set maximum number of pages to fetch
 
     if st.button("搜索"):
-        st.subheader(f"搜索结果-试用版限制10条 ({search_engine})")
-        page = 0
-        results = []
+        # Fetch results from all pages
+        all_results = fetch_all_results(search_engine, keyword, amazon_site, max_pages)
 
-        if search_engine == "Google":
-            results = google_search(keyword, amazon_site, page)
-        elif search_engine == "Bing":
-            results = bing_search(keyword, amazon_site, page)
+        if all_results:
+            # Filter out links containing 'sellercentral'
+            filtered_results = [
+                (title, link) for title, link in all_results 
+                if "sellercentral" not in link
+            ]
 
-        if results:
-            for i, (title, link) in enumerate(results, start=1):
-                st.markdown(f"**{i}. [{title}]({link})**")
+            if filtered_results:
+                # Store filtered results in session state
+                st.session_state.results = []
+                for title, link in filtered_results:
+                    asin = extract_asin(link)
+                    st.session_state.results.append({"Title": title, "URL": link, "ASIN": asin})
+
+                st.subheader(f"搜索结果-试用版限制{len(filtered_results)}条 ({search_engine})")
+                for i, result in enumerate(st.session_state.results, start=1):
+                    st.markdown(f"**{i}. [{result['Title']}]({result['URL']})**")
+                
+                # Prepare DataFrame for download
+                df = pd.DataFrame(st.session_state.results)
+                excel_buffer = BytesIO()
+                df.to_excel(excel_buffer, index=False, engine='openpyxl')
+                excel_buffer.seek(0)
+
+                # Download button for the Excel file
+                st.download_button(
+                    label="导出并下载Excel",
+                    data=excel_buffer,
+                    file_name="search_results.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
+            else:
+                st.write("未找到相关结果（已排除包含'sellercentral'的链接）")
         else:
             st.write("未找到相关结果")
 
@@ -34,7 +118,7 @@ def main():
     st.write("或添加客服微信：happy_prince45")
 
 def check_password():
-    """Returns True if the user enters the correct password."""
+    """Returns `True` if the user enters the correct password."""
     if "password_correct" not in st.session_state:
         st.subheader("用户认证")
         password = st.text_input("请输入密码", type="password")
