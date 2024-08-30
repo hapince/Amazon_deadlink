@@ -12,7 +12,7 @@ def extract_asin(url):
     return None
 
 def main():
-    st.title("亚马逊僵尸链接查询工具 - （试用版本）")
+    st.title("亚马逊僵尸链接查询工具 -（试用版本）")
     st.write("添加微信“happy_prince45获取全功能僵尸链接采集软件”。1.查询链接条数无限制2.查询结果包含品牌评分3.可以一件导出asin4.多站点查询.......")
     st.subheader("搜索设置")
     search_engine = st.selectbox("选择搜索引擎", ["Google", "Bing"])
