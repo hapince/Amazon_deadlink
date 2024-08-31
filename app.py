@@ -85,7 +85,7 @@ def fetch_all_results(search_engine, keyword, amazon_site, max_links=50):
     return all_results
 
 def main():
-    st.title("亚马逊僵尸链接查询工具")
+    st.title("亚马逊僵尸链接采集工具")
     st.write("遇到问题联系：happy_prince45")
     st.subheader("搜索设置")
     search_engine = st.selectbox("选择搜索引擎", ["Google", "Bing"])
