@@ -149,6 +149,12 @@ def main():
     st.write("关注公众号“Hapince出海日记”")
     st.image("image/publicwechat.jpg")
 
+    # Display user count
+    if "user_count" not in st.session_state:
+        st.session_state.user_count = 0
+
+    st.write(f"当前使用人数：{st.session_state.user_count}")
+
 def check_password():
     """Returns `True` if the user enters the correct password."""
     if "password_correct" not in st.session_state:
@@ -157,6 +163,8 @@ def check_password():
         if st.button("提交"):
             if password == "happyprince":  # Set password to 'happyprince'
                 st.session_state.password_correct = True
+                # Increment user count
+                st.session_state.user_count = st.session_state.get("user_count", 0) + 1
             else:
                 st.error("密码错误，请重试")
                 st.session_state.password_correct = False
