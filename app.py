@@ -151,7 +151,7 @@ def main():
 
     # Display user count
     if "user_count" not in st.session_state:
-        st.session_state.user_count = 0
+        st.session_state.user_count = 176
 
     st.write(f"当前使用人数：{st.session_state.user_count}")
 
