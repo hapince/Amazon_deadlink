@@ -174,8 +174,9 @@ def main():
     st.image("image/publicwechat.jpg")
 
     # Display the user count at the bottom left corner
-    user_count = update_user_count()
-    st.markdown(f"<div style='position: fixed; bottom: 10px; left: 10px;'>使用人数: {user_count}</div>", unsafe_allow_html=True)
+    if st.session_state.get("password_correct", False):
+        user_count = update_user_count()
+        st.markdown(f"<div style='position: fixed; bottom: 10px; left: 10px;'>使用人数: {user_count}</div>", unsafe_allow_html=True)
 
 def check_password():
     """Returns `True` if the user enters the correct password."""
@@ -189,6 +190,10 @@ def check_password():
                 st.error("密码错误，请重试")
                 st.session_state.password_correct = False
 
+            # Increment user count after submitting the password
+            user_count = update_user_count()
+            st.markdown(f"<div style='position: fixed; bottom: 10px; left: 10px;'>使用人数: {user_count}</div>", unsafe_allow_html=True)
+
     return st.session_state.get("password_correct", False)
 
 if __name__ == "__main__":
@@ -197,6 +202,3 @@ if __name__ == "__main__":
     else:
         st.warning("由于服务器资源有限，为避免不必要流量，请进入官方群或关注微信公众号“Hapince出海日记”获取密码")
         st.image("image/wechatgroup.jpg")
-        # Increment the user count even if the password is incorrect
-        user_count = update_user_count()
-        st.markdown(f"<div style='position: fixed; bottom: 10px; left: 10px;'>使用人数: {user_count}</div>", unsafe_allow_html=True)
