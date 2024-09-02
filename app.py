@@ -6,6 +6,7 @@ import random
 import requests
 from bs4 import BeautifulSoup
 from utils import google_search, bing_search
+import os
 
 # List of user agents to randomize the header for each request
 USER_AGENTS = [
@@ -14,6 +15,9 @@ USER_AGENTS = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.54',
     'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0'
 ]
+
+# Path to the file storing user count
+USER_COUNT_FILE = "user_count.txt"
 
 def get_random_user_agent():
     """Return a random User-Agent from the list."""
@@ -84,6 +88,26 @@ def fetch_all_results(search_engine, keyword, amazon_site, max_links=50):
     
     return all_results
 
+def update_user_count():
+    """Update and return the current user count."""
+    if not os.path.exists(USER_COUNT_FILE):
+        # If file doesn't exist, create it with the initial value
+        with open(USER_COUNT_FILE, "w") as f:
+            f.write("735")
+    
+    # Read current count
+    with open(USER_COUNT_FILE, "r") as f:
+        user_count = int(f.read().strip())
+    
+    # Increment count
+    user_count += 1
+    
+    # Save the updated count back to the file
+    with open(USER_COUNT_FILE, "w") as f:
+        f.write(str(user_count))
+    
+    return user_count
+
 def main():
     st.title("亚马逊僵尸链接采集工具")
     st.write("遇到问题联系：happy_prince45")
@@ -149,11 +173,9 @@ def main():
     st.write("关注公众号“Hapince出海日记”")
     st.image("image/publicwechat.jpg")
 
-    # Display user count
-    if "user_count" not in st.session_state:
-        st.session_state.user_count = 0
-
-    st.write(f"当前使用人数：{st.session_state.user_count}")
+    # Display the user count at the bottom left corner
+    user_count = update_user_count()
+    st.markdown(f"<div style='position: fixed; bottom: 10px; left: 10px;'>使用人数: {user_count}</div>", unsafe_allow_html=True)
 
 def check_password():
     """Returns `True` if the user enters the correct password."""
@@ -163,8 +185,6 @@ def check_password():
         if st.button("提交"):
             if password == "happyprince":  # Set password to 'happyprince'
                 st.session_state.password_correct = True
-                # Increment user count
-                st.session_state.user_count = st.session_state.get("user_count", 0) + 1
             else:
                 st.error("密码错误，请重试")
                 st.session_state.password_correct = False
@@ -177,3 +197,6 @@ if __name__ == "__main__":
     else:
         st.warning("由于服务器资源有限，为避免不必要流量，请进入官方群或关注微信公众号“Hapince出海日记”获取密码")
         st.image("image/wechatgroup.jpg")
+        # Increment the user count even if the password is incorrect
+        user_count = update_user_count()
+        st.markdown(f"<div style='position: fixed; bottom: 10px; left: 10px;'>使用人数: {user_count}</div>", unsafe_allow_html=True)
