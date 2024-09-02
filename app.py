@@ -108,6 +108,28 @@ def update_user_count():
     
     return user_count
 
+def display_user_count(user_count):
+    """Display the user count at the bottom left corner without overlapping."""
+    st.markdown(
+        f"""
+        <div style='
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background-color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;'>
+            使用人数: {user_count}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
 def main():
     st.title("亚马逊僵尸链接采集工具")
     st.write("遇到问题联系：happy_prince45")
@@ -174,9 +196,8 @@ def main():
     st.image("image/publicwechat.jpg")
 
     # Display the user count at the bottom left corner
-    if st.session_state.get("password_correct", False):
-        user_count = update_user_count()
-        st.markdown(f"<div style='position: fixed; bottom: 10px; left: 10px;'>使用人数: {user_count}</div>", unsafe_allow_html=True)
+    user_count = int(open(USER_COUNT_FILE).read().strip())  # Read the current count
+    display_user_count(user_count)
 
 def check_password():
     """Returns `True` if the user enters the correct password."""
@@ -192,11 +213,15 @@ def check_password():
 
             # Increment user count after submitting the password
             user_count = update_user_count()
-            st.markdown(f"<div style='position: fixed; bottom: 10px; left: 10px;'>使用人数: {user_count}</div>", unsafe_allow_html=True)
+            display_user_count(user_count)
 
     return st.session_state.get("password_correct", False)
 
 if __name__ == "__main__":
+    # Display the user count at the bottom left corner of the password page
+    user_count = int(open(USER_COUNT_FILE).read().strip())  # Read the current count
+    display_user_count(user_count)
+
     if check_password():
         main()
     else:
