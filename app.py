@@ -16,8 +16,9 @@ USER_AGENTS = [
     'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0'
 ]
 
-# Path to the file storing user count
+# Paths to files for user count and authentication status
 USER_COUNT_FILE = "user_count.txt"
+AUTH_STATUS_FILE = "auth_status.txt"
 
 def get_random_user_agent():
     """Return a random User-Agent from the list."""
@@ -201,28 +202,39 @@ def main():
 
 def check_password():
     """Returns `True` if the user enters the correct password."""
+    if not os.path.exists(AUTH_STATUS_FILE):
+        # If file doesn't exist, create it with 'False' (not authenticated)
+        with open(AUTH_STATUS_FILE, "w") as f:
+            f.write("False")
+
+    if st.session_state.get("password_correct", False):
+        # Skip password page if authenticated
+        return True
+
     if "password_correct" not in st.session_state:
         st.subheader("用户认证")
         password = st.text_input("请输入密码", type="password")
         if st.button("提交"):
             if password == "happyprince":  # Set password to 'happyprince'
                 st.session_state.password_correct = True
+                # Update authentication status file
+                with open(AUTH_STATUS_FILE, "w") as f:
+                    f.write("True")
                 # Update and display user count after correct password submission
                 user_count = update_user_count()
                 display_user_count(user_count)
             else:
                 st.error("密码错误，请重试")
                 st.session_state.password_correct = False
+                # Update user count even if the password is incorrect
+                update_user_count()
 
     return st.session_state.get("password_correct", False)
 
 if __name__ == "__main__":
-    # Display the user count at the bottom left corner of the password page
-    user_count = int(open(USER_COUNT_FILE).read().strip())  # Read the current count
-    display_user_count(user_count)
-
-    if check_password():
-        main()
-    else:
+    # Check authentication status
+    if not check_password():
         st.warning("由于服务器资源有限，为避免不必要流量，请进入官方群或关注微信公众号“Hapince出海日记”获取密码")
         st.image("image/wechatgroup.jpg")
+    else:
+        main()
