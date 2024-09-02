@@ -207,13 +207,12 @@ def check_password():
         if st.button("提交"):
             if password == "happyprince":  # Set password to 'happyprince'
                 st.session_state.password_correct = True
+                # Update and display user count after correct password submission
+                user_count = update_user_count()
+                display_user_count(user_count)
             else:
                 st.error("密码错误，请重试")
                 st.session_state.password_correct = False
-
-            # Increment user count after submitting the password
-            user_count = update_user_count()
-            display_user_count(user_count)
 
     return st.session_state.get("password_correct", False)
 
