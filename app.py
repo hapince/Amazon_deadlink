@@ -21,9 +21,9 @@ USER_AGENTS = [
 USER_COUNT_FILE = "user_count.txt"
 hide_streamlit_style = """
 <style>
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-#GithubIcon {visibility: hidden;}
+#MainMenu {display: none;}
+footer {display: none;}
+#GithubIcon {dispaly: none;}
 </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
