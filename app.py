@@ -26,9 +26,6 @@ USER_AGENTS = [
 # Path to the file storing user count
 USER_COUNT_FILE = "user_count.txt"
 
-
-
-
 def get_random_user_agent():
     """Return a random User-Agent from the list."""
     return random.choice(USER_AGENTS)
