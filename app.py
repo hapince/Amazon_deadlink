@@ -10,7 +10,7 @@ import os
 
 # Add custom CSS to hide the GitHub icon
 hide_github_icon = """
-#GithubIcon {
+.st-emotion-cache-1wbqy5l e3g6aar2 {
   visibility: hidden;
 }
 """
