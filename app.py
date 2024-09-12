@@ -8,6 +8,13 @@ from bs4 import BeautifulSoup
 from utils import google_search, bing_search
 import os
 
+# Add custom CSS to hide the GitHub icon
+hide_github_icon = """
+#GithubIcon {
+  visibility: hidden;
+}
+"""
+
 # List of user agents to randomize the header for each request
 USER_AGENTS = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -20,15 +27,7 @@ USER_AGENTS = [
 USER_COUNT_FILE = "user_count.txt"
 
 
-hide_streamlit_style = """
-<style>
-.st-emotion-cache-12fmjuu ezrtsby2{display:none;}
-#MainMenu {display: none;}
-footer {display: none;}
-#GithubIcon {dispaly: none;}
-</style>
-"""
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 
 def get_random_user_agent():
     """Return a random User-Agent from the list."""
