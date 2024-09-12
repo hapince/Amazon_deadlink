@@ -21,6 +21,7 @@ USER_AGENTS = [
 USER_COUNT_FILE = "user_count.txt"
 hide_streamlit_style = """
 <style>
+.st-emotion-cache-12fmjuu ezrtsby2{display:none;}
 #MainMenu {display: none;}
 footer {display: none;}
 #GithubIcon {dispaly: none;}
