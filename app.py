@@ -17,8 +17,9 @@ USER_AGENTS = [
 ]
 
 # Path to the file storing user count
-
 USER_COUNT_FILE = "user_count.txt"
+
+
 hide_streamlit_style = """
 <style>
 .st-emotion-cache-12fmjuu ezrtsby2{display:none;}
