@@ -8,13 +8,6 @@ from bs4 import BeautifulSoup
 from utils import google_search, bing_search
 import os
 
-# Add custom CSS to hide the GitHub icon
-hide_github_icon = """
-.st-emotion-cache-1wbqy5l e3g6aar2 {
-  visibility: hidden;
-}
-"""
-
 # List of user agents to randomize the header for each request
 USER_AGENTS = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
