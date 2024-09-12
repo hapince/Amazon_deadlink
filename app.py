@@ -17,7 +17,15 @@ USER_AGENTS = [
 ]
 
 # Path to the file storing user count
+
 USER_COUNT_FILE = "user_count.txt"
+hide_streamlit_style = """
+<style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+</style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 def get_random_user_agent():
     """Return a random User-Agent from the list."""
