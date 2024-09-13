@@ -140,7 +140,7 @@ def main():
         "www.amazon.in", "www.amazon.sg", "www.amazon.ae"
     ])
     keyword = st.text_input("输入关键词")
-    max_links = st.slider("查询链接数限制", 3, 15, 5)  # Allow user to set maximum number of links to fetch
+    max_links = st.slider("查询链接数限制", 3, 10, 100)  # Allow user to set maximum number of links to fetch
 
     if st.button("搜索"):
         # Fetch results from all pages
