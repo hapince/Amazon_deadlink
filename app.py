@@ -199,30 +199,51 @@ def main():
     user_count = int(open(USER_COUNT_FILE).read().strip())  # Read the current count
     display_user_count(user_count)
 
-def check_password():
-    """Returns `True` if the user enters the correct password."""
-    if "password_correct" not in st.session_state:
-        st.subheader("用户认证")
-        password = st.text_input("请输入密码", type="password")
-        if st.button("提交"):
-            if password == "happyprince":  # Set password to 'happyprince'
-                st.session_state.password_correct = True
-                # Update and display user count after correct password submission
-                user_count = update_user_count()
-                display_user_count(user_count)
-            else:
-                st.error("密码错误，请重试")
-                st.session_state.password_correct = False
+USER_CREDENTIALS_FILE = "users.txt"
 
-    return st.session_state.get("password_correct", False)
+def load_user_credentials():
+    """加载存储的用户账号和密码"""
+    credentials = {}
+    try:
+        with open(USER_CREDENTIALS_FILE, 'r') as file:
+            for line in file:
+                user, pwd = line.strip().split(',')
+                credentials[user] = pwd
+    except FileNotFoundError:
+        pass
+    return credentials
+
+def add_new_user(username, password):
+    """手动添加新的用户账号和密码"""
+    with open(USER_CREDENTIALS_FILE, 'a') as file:
+        file.write(f"{username},{password}\n")
+
+def check_user_credentials(username, password):
+    """检查用户账号和密码是否正确"""
+    credentials = load_user_credentials()
+    return credentials.get(username) == password
+
+def check_login():
+    """用户登录逻辑"""
+    if "logged_in" not in st.session_state:
+        st.subheader("用户登录")
+        username = st.text_input("请输入账号")
+        password = st.text_input("请输入密码", type="password")
+
+        if st.button("登录"):
+            if check_user_credentials(username, password):
+                st.success("登录成功！")
+                st.session_state.logged_in = True
+            else:
+                st.error("账号或密码错误，请重试")
+
+    return st.session_state.get("logged_in", False)
 
 if __name__ == "__main__":
-    # Display the user count at the bottom left corner of the password page
-    user_count = int(open(USER_COUNT_FILE).read().strip())  # Read the current count
-    display_user_count(user_count)
-
-    if check_password():
-        main()
+    # 登录页
+    if check_login():
+        st.write("欢迎使用完整服务！")
+        # 此处调用主功能
+        # main()
     else:
-        st.warning("由于服务器资源有限，为避免不必要流量，请进入官方群或关注微信公众号“Hapince出海日记”获取密码")
-        st.image("image/publicwechat.jpg")
+        st.warning("请使用收到的账号和密码登录。")
