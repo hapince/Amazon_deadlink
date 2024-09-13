@@ -245,7 +245,7 @@ if __name__ == "__main__":
         main()
     else:
         st.warning("为了给您提供更优质的服务，现需通过微信支付15元获取一周的完整使用权限（搜索次数不再受限）。感谢您的理解与支持！")
-        st.image("image/wechat.jpg",width=300)
+        st.image("image/wechat.jpg",width=300,caption="这是微信支付的图片")
 
 
 
