@@ -242,8 +242,6 @@ def check_login():
 if __name__ == "__main__":
     # 登录页
     if check_login():
-        st.write("欢迎使用完整服务！")
-        # 此处调用主功能
-        # main()
+        main()
     else:
         st.warning("请使用收到的账号和密码登录。")
