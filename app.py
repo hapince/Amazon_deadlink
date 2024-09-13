@@ -244,4 +244,12 @@ if __name__ == "__main__":
     if check_login():
         main()
     else:
-        st.warning("请使用收到的账号和密码登录。")
+        st.warning("为了给您提供更优质的服务，现需通过微信支付15元获取一周的完整使用权限（搜索次数不再受限）。感谢您的理解与支持！")
+        st.image("image/wechat")
+
+
+
+
+
+
+")
