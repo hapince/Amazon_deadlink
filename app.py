@@ -163,7 +163,7 @@ def main():
                     image_tag = f'<img src="{image_url}" style="width:100px;height:100px;object-fit:cover;"/>' if image_url else f'<img src="https://ninjify.shop/wp-content/uploads/2024/08/微信图片_20240831012417.jpg" style="width:100px;height:100px;object-fit:cover;"/>'
                     st.session_state.results.append({"Image": image_tag, "Title": title, "URL": link, "ASIN": asin})
 
-                st.subheader(f"搜索结果-试用版限制{max_links}条，如果要取消限制，请联系管理员")
+                st.subheader(f"搜索结果显示{max_links}条，如有问题，请联系管理员")
                 
                 # Display results in table format
                 results_df = pd.DataFrame(st.session_state.results)
