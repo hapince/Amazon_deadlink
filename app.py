@@ -137,8 +137,6 @@ def display_user_count(user_count):
     )
 
 def main():
-    # 每次进入 main() 函数时，更新用户计数
-    user_count = update_user_count()
     st.title("亚马逊僵尸链接采集工具")
     st.write("遇到问题联系：happy_prince45")
     st.subheader("搜索设置")
