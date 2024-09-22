@@ -88,25 +88,39 @@ def fetch_all_results(search_engine, keyword, amazon_site, max_links=50):
     
     return all_results
 
-def update_user_count():
-    """Update and return the current user count."""
+import os
+
+USER_COUNT_FILE = "user_count.txt"
+
+def update_user_count(increment=1):
+    """
+    Update and return the current user count by a specified increment.
+    
+    Args:
+        increment (int): The value to increase or decrease the user count by.
+                         Default is 1 (increase by 1).
+    
+    Returns:
+        int: The updated user count.
+    """
     if not os.path.exists(USER_COUNT_FILE):
         # If file doesn't exist, create it with the initial value
         with open(USER_COUNT_FILE, "w") as f:
-            f.write("735")
+            f.write("1000")
     
     # Read current count
     with open(USER_COUNT_FILE, "r") as f:
         user_count = int(f.read().strip())
     
-    # Increment count
-    user_count += 1
+    # Modify the count based on the increment value
+    user_count += increment
     
     # Save the updated count back to the file
     with open(USER_COUNT_FILE, "w") as f:
         f.write(str(user_count))
     
     return user_count
+
 
 def display_user_count(user_count):
     """Display the user count at the bottom left corner without overlapping."""
