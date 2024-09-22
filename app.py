@@ -104,18 +104,14 @@ def update_user_count(increment=1):
         int: The updated user count.
     """
     if not os.path.exists(USER_COUNT_FILE):
-        # If file doesn't exist, create it with the initial value
         with open(USER_COUNT_FILE, "w") as f:
             f.write("1000")
     
-    # Read current count
     with open(USER_COUNT_FILE, "r") as f:
         user_count = int(f.read().strip())
     
-    # Modify the count based on the increment value
     user_count += increment
     
-    # Save the updated count back to the file
     with open(USER_COUNT_FILE, "w") as f:
         f.write(str(user_count))
     
