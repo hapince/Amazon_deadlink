@@ -244,6 +244,9 @@ def check_login():
             if check_user_credentials(username, password):
                 st.success("登录成功！")
                 st.session_state.logged_in = True
+                
+                update_user_count()  
+
             else:
                 st.error("账号或密码错误，请重试")
 
