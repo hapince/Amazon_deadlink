@@ -88,10 +88,6 @@ def fetch_all_results(search_engine, keyword, amazon_site, max_links=50):
     
     return all_results
 
-import os
-
-USER_COUNT_FILE = "user_count.txt"
-
 def update_user_count(increment=1):
     """
     Update and return the current user count by a specified increment.
@@ -141,6 +137,8 @@ def display_user_count(user_count):
     )
 
 def main():
+    # 每次进入 main() 函数时，更新用户计数
+    user_count = update_user_count()
     st.title("亚马逊僵尸链接采集工具")
     st.write("遇到问题联系：happy_prince45")
     st.subheader("搜索设置")
@@ -206,7 +204,6 @@ def main():
     st.image("image/publicwechat.jpg")
 
     # Display the user count at the bottom left corner
-    user_count = int(open(USER_COUNT_FILE).read().strip())  # Read the current count
     display_user_count(user_count)
 
 USER_CREDENTIALS_FILE = "users.txt"
@@ -252,15 +249,11 @@ def check_login():
 if __name__ == "__main__":
     # 登录页
     if check_login():
-        main()
+        main()  # 用户登录成功后，计数增加
     else:
         st.markdown("""
-    <div style="font-weight: bold; color: #ff0000; background-color: #f0f0f0; padding: 10px;">
-        为了给您提供更优质的服务，现需通过微信支付15元获取一周的完整使用权限（搜索次数不再受限）。感谢您的理解与支持！
-    </div>
-""", unsafe_allow_html=True)
-        st.image("image/wechat.jpg",width=300,caption="这是微信支付的图片")
-
-
-
-
+        <div style="font-weight: bold; color: #ff0000; background-color: #f0f0f0; padding: 10px;">
+            为了给您提供更优质的服务，现需通过微信支付15元获取一周的完整使用权限（搜索次数不再受限）。感谢您的理解与支持！
+        </div>
+        """, unsafe_allow_html=True)
+        st.image("image/wechat.jpg", width=300, caption="这是微信支付的图片")
