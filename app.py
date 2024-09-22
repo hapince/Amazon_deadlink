@@ -93,6 +93,16 @@ import os
 USER_COUNT_FILE = "user_count.txt"
 
 def update_user_count(increment=1):
+    """
+    Update and return the current user count by a specified increment.
+    
+    Args:
+        increment (int): The value to increase or decrease the user count by.
+                         Default is 1 (increase by 1).
+    
+    Returns:
+        int: The updated user count.
+    """
     if not os.path.exists(USER_COUNT_FILE):
         # If file doesn't exist, create it with the initial value
         with open(USER_COUNT_FILE, "w") as f:
