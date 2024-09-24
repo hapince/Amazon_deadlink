@@ -5,7 +5,7 @@ import time
 import random
 import requests
 from bs4 import BeautifulSoup
-from utils import google_search, bing_search
+from utils import google_search
 import os
 
 # List of user agents to randomize the header for each request
@@ -61,12 +61,8 @@ def fetch_all_results(search_engine, keyword, amazon_site, max_links=50):
         delay = random.uniform(2, 5)
         time.sleep(delay)
         
-        if search_engine == "Google":
-            headers = {'User-Agent': get_random_user_agent()}
-            results = google_search(keyword, amazon_site, page, headers=headers)
-        elif search_engine == "Bing":
-            headers = {'User-Agent': get_random_user_agent()}
-            results = bing_search(keyword, amazon_site, page, headers=headers)
+        headers = {'User-Agent': get_random_user_agent()}
+        results = google_search(keyword, amazon_site, page, headers=headers)
         
         # If no more results are found, break the loop
         if not results:
