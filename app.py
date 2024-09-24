@@ -139,8 +139,6 @@ def display_user_count(user_count):
 def main():
     st.title("亚马逊僵尸链接采集工具")
     st.write("遇到问题联系：happy_prince45")
-    st.subheader("搜索设置")
-    st.write("你当前使用的搜索引擎是Google")
     amazon_site = st.selectbox("选择亚马逊站点", [
         "amazon.com", "amazon.ca", "amazon.co.uk", "www.amazon.com.au", 
         "www.amazon.in", "www.amazon.sg", "www.amazon.ae"
