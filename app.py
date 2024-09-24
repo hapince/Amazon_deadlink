@@ -153,7 +153,6 @@ def main():
         all_results = fetch_all_results(search_engine, keyword, amazon_site, max_links)
 
         if all_results:
-            # Filter out links containing 'sellercentral'
             filtered_results = [
                 (title, link) for title, link in all_results 
                 if "sellercentral" not in link
