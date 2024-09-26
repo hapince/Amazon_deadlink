@@ -148,54 +148,56 @@ def main():
         ])
         keyword = st.text_input("输入关键词")
         max_links = st.slider("查询链接条数", 1, 30, 10)
-        
+
         # 搜索按钮放在侧边栏
-        if st.button("搜索"):
-            all_results = fetch_all_results(keyword, amazon_site, max_links)
+        search_button = st.button("搜索")
 
-            if all_results:
-                filtered_results = [
-                    (title, link) for title, link in all_results 
-                    if "sellercentral" not in link
-                ]
+    # 当用户点击搜索按钮时执行搜索
+    if search_button:
+        all_results = fetch_all_results(keyword, amazon_site, max_links)
 
-                if filtered_results:
-                    st.session_state.results = []
-                    for title, link in filtered_results:
-                        asin = extract_asin(link)
-                        image_url = extract_image_url(asin) if asin else None
-                        image_tag = f'<img src="{image_url}" style="width:100px;height:100px;object-fit:cover;"/>' if image_url else f'<img src="https://ninjify.shop/wp-content/uploads/2024/08/微信图片_20240831012417.jpg" style="width:100px;height:100px;object-fit:cover;"/>'
-                        st.session_state.results.append({"Image": image_tag, "Title": title, "URL": link, "ASIN": asin})
+        if all_results:
+            filtered_results = [
+                (title, link) for title, link in all_results 
+                if "sellercentral" not in link
+            ]
 
-                    # 显示搜索结果在主区域
-                    st.subheader(f"搜索结果显示{max_links}条，如有问题，请联系管理员")
-                    results_df = pd.DataFrame(st.session_state.results)
-                    results_df['Title'] = results_df.apply(lambda row: f'<a href="{row["URL"]}">{row["Title"]}</a>', axis=1)
-                    results_df = results_df[['Image', 'Title', 'ASIN']]
-                    st.markdown(results_df.to_html(escape=False, index=False), unsafe_allow_html=True)
+            if filtered_results:
+                st.session_state.results = []
+                for title, link in filtered_results:
+                    asin = extract_asin(link)
+                    image_url = extract_image_url(asin) if asin else None
+                    image_tag = f'<img src="{image_url}" style="width:100px;height:100px;object-fit:cover;"/>' if image_url else f'<img src="https://ninjify.shop/wp-content/uploads/2024/08/微信图片_20240831012417.jpg" style="width:100px;height:100px;object-fit:cover;"/>'
+                    st.session_state.results.append({"Image": image_tag, "Title": title, "URL": link, "ASIN": asin})
 
-                    # 下载按钮
-                    download_df = results_df[['Title', 'ASIN']].copy()
-                    download_df['URL'] = [result['URL'] for result in st.session_state.results]
-                    excel_buffer = BytesIO()
-                    download_df.to_excel(excel_buffer, index=False, engine='openpyxl')
-                    excel_buffer.seek(0)
+                # 显示搜索结果在主区域
+                st.subheader(f"搜索结果显示{max_links}条，如有问题，请联系管理员")
+                results_df = pd.DataFrame(st.session_state.results)
+                results_df['Title'] = results_df.apply(lambda row: f'<a href="{row["URL"]}">{row["Title"]}</a>', axis=1)
+                results_df = results_df[['Image', 'Title', 'ASIN']]
+                st.markdown(results_df.to_html(escape=False, index=False), unsafe_allow_html=True)
 
-                    st.download_button(
-                        label="导出并下载Excel",
-                        data=excel_buffer,
-                        file_name="search_results.xlsx",
-                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    )
-                else:
-                    st.write("未找到相关结果（已排除包含'sellercentral'的链接）")
+                # 下载按钮
+                download_df = results_df[['Title', 'ASIN']].copy()
+                download_df['URL'] = [result['URL'] for result in st.session_state.results]
+                excel_buffer = BytesIO()
+                download_df.to_excel(excel_buffer, index=False, engine='openpyxl')
+                excel_buffer.seek(0)
+
+                st.download_button(
+                    label="导出并下载Excel",
+                    data=excel_buffer,
+                    file_name="search_results.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
             else:
-                st.write("未找到相关结果")
-        st.subheader("联系方式")
-        st.write("关注公众号“Hapince出海日记”")
-        st.image("image/publicwechat.jpg")
+                st.write("未找到相关结果（已排除包含'sellercentral'的链接）")
+        else:
+            st.write("未找到相关结果")
+
     user_count = int(open(USER_COUNT_FILE).read().strip())
     display_user_count(user_count)
+
 
 
 
