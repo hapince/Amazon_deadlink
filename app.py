@@ -49,7 +49,7 @@ def extract_image_url(asin):
     
     return None
 
-def fetch_all_results(search_engine, keyword, amazon_site, max_links=50):
+def fetch_all_results(keyword, amazon_site, max_links=50):
     """Fetch results until the desired number of links is reached."""
     page = 0
     all_results = []
@@ -148,7 +148,7 @@ def main():
 
     if st.button("搜索"):
         # Fetch results from all pages
-        all_results = fetch_all_results(search_engine, keyword, amazon_site, max_links)
+        all_results = fetch_all_results(keyword, amazon_site, max_links)
 
         if all_results:
             filtered_results = [
