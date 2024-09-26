@@ -139,7 +139,9 @@ def display_user_count(user_count):
 def main():
     st.title("亚马逊僵尸链接采集工具")
     st.write("遇到问题联系：happy_prince45")
-    
+    st.subheader("联系方式")
+    st.write("关注公众号“Hapince出海日记”")
+    st.image("image/publicwechat.jpg")
     # 将输入部分放入侧边栏
     with st.sidebar:
         amazon_site = st.selectbox("选择亚马逊站点", [
@@ -190,10 +192,6 @@ def main():
                     st.write("未找到相关结果（已排除包含'sellercentral'的链接）")
             else:
                 st.write("未找到相关结果")
-
-    st.subheader("联系方式")
-    st.write("关注公众号“Hapince出海日记”")
-    st.image("image/publicwechat.jpg")
     
     user_count = int(open(USER_COUNT_FILE).read().strip())
     display_user_count(user_count)
