@@ -188,12 +188,6 @@ def main():
 
                 # 显示搜索结果在主区域
                 st.subheader(f"搜索结果显示{max_links}条，如有问题，请联系管理员")
-                results_df = pd.DataFrame(st.session_state.results)
-                results_df['Title'] = results_df.apply(lambda row: f'<a href="{row["URL"]}">{row["Title"]}</a>', axis=1)
-                results_df = results_df[['Image', 'Title', 'ASIN']]
-                st.markdown(results_df.to_html(escape=False, index=False), unsafe_allow_html=True)
-
-                # 下载按钮
                 download_df = results_df[['Title', 'ASIN']].copy()
                 download_df['URL'] = [result['URL'] for result in st.session_state.results]
                 excel_buffer = BytesIO()
@@ -205,6 +199,12 @@ def main():
                     data=excel_buffer,
                     file_name="search_results.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    
+                results_df = pd.DataFrame(st.session_state.results)
+                results_df['Title'] = results_df.apply(lambda row: f'<a href="{row["URL"]}">{row["Title"]}</a>', axis=1)
+                results_df = results_df[['Image', 'Title', 'ASIN']]
+                st.markdown(results_df.to_html(escape=False, index=False), unsafe_allow_html=True)
+
                 )
             else:
                 st.write("未找到相关结果（已排除包含'sellercentral'的链接）")
