@@ -151,7 +151,10 @@ def main():
 
         # 搜索按钮放在侧边栏
         search_button = st.button("搜索")
-
+        st.subheader("联系方式")
+        st.write("关注公众号“Hapince出海日记”")
+        st.image("image/publicwechat.jpg")
+        
     # 当用户点击搜索按钮时执行搜索
     if search_button:
         all_results = fetch_all_results(keyword, amazon_site, max_links)
