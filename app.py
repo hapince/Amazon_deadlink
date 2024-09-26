@@ -152,7 +152,8 @@ def main():
         st.write("关注公众号“Hapince出海日记”")
         st.image("image/publicwechat.jpg")
         
-    if st.button("搜索"):
+        # 搜索按钮放在侧边栏
+        if st.button("搜索"):
             all_results = fetch_all_results(keyword, amazon_site, max_links)
 
             if all_results:
@@ -196,6 +197,7 @@ def main():
 
     user_count = int(open(USER_COUNT_FILE).read().strip())
     display_user_count(user_count)
+
 
 
 
