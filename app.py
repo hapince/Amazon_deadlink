@@ -139,68 +139,68 @@ def display_user_count(user_count):
 def main():
     st.title("亚马逊僵尸链接采集工具")
     st.write("遇到问题联系：happy_prince45")
-    amazon_site = st.selectbox("选择亚马逊站点", [
-        "amazon.com", "amazon.ca", "amazon.co.uk", "www.amazon.com.au", 
-        "www.amazon.in", "www.amazon.sg", "www.amazon.ae"
-    ])
-    keyword = st.text_input("输入关键词")
-    max_links = st.slider("查询链接条数", 1, 30, 10)  # Allow user to set maximum number of links to fetch
+    
+    # Create columns for layout
+    col1, col2 = st.columns([1, 3])  # Adjust proportions as needed
+    
+    with col1:
+        amazon_site = st.selectbox("选择亚马逊站点", [
+            "amazon.com", "amazon.ca", "amazon.co.uk", "www.amazon.com.au", 
+            "www.amazon.in", "www.amazon.sg", "www.amazon.ae"
+        ])
+        keyword = st.text_input("输入关键词")
+        max_links = st.slider("查询链接条数", 1, 30, 10)  # Allow user to set maximum number of links to fetch
+        
+        if st.button("搜索"):
+            all_results = fetch_all_results(keyword, amazon_site, max_links)
 
-    if st.button("搜索"):
-        # Fetch results from all pages
-        all_results = fetch_all_results(keyword, amazon_site, max_links)
+            if all_results:
+                filtered_results = [
+                    (title, link) for title, link in all_results 
+                    if "sellercentral" not in link
+                ]
 
-        if all_results:
-            filtered_results = [
-                (title, link) for title, link in all_results 
-                if "sellercentral" not in link
-            ]
+                if filtered_results:
+                    st.session_state.results = []
+                    for title, link in filtered_results:
+                        asin = extract_asin(link)
+                        image_url = extract_image_url(asin) if asin else None
+                        image_tag = f'<img src="{image_url}" style="width:100px;height:100px;object-fit:cover;"/>' if image_url else f'<img src="https://ninjify.shop/wp-content/uploads/2024/08/微信图片_20240831012417.jpg" style="width:100px;height:100px;object-fit:cover;"/>'
+                        st.session_state.results.append({"Image": image_tag, "Title": title, "URL": link, "ASIN": asin})
 
-            if filtered_results:
-                # Store filtered results in session state
-                st.session_state.results = []
-                for title, link in filtered_results:
-                    asin = extract_asin(link)
-                    image_url = extract_image_url(asin) if asin else None
-                    # Use default image if no image found
-                    image_tag = f'<img src="{image_url}" style="width:100px;height:100px;object-fit:cover;"/>' if image_url else f'<img src="https://ninjify.shop/wp-content/uploads/2024/08/微信图片_20240831012417.jpg" style="width:100px;height:100px;object-fit:cover;"/>'
-                    st.session_state.results.append({"Image": image_tag, "Title": title, "URL": link, "ASIN": asin})
+                    st.subheader(f"搜索结果显示{max_links}条，如有问题，请联系管理员")
+                    
+                    results_df = pd.DataFrame(st.session_state.results)
+                    results_df['Title'] = results_df.apply(lambda row: f'<a href="{row["URL"]}">{row["Title"]}</a>', axis=1)
+                    results_df = results_df[['Image', 'Title', 'ASIN']]
+                    
+                    st.markdown(results_df.to_html(escape=False, index=False), unsafe_allow_html=True)
+                    
+                    download_df = results_df[['Title', 'ASIN']].copy()
+                    download_df['URL'] = [result['URL'] for result in st.session_state.results]
+                    excel_buffer = BytesIO()
+                    download_df.to_excel(excel_buffer, index=False, engine='openpyxl')
+                    excel_buffer.seek(0)
 
-                st.subheader(f"搜索结果显示{max_links}条，如有问题，请联系管理员")
-                
-                # Display results in table format
-                results_df = pd.DataFrame(st.session_state.results)
-                results_df['Title'] = results_df.apply(lambda row: f'<a href="{row["URL"]}">{row["Title"]}</a>', axis=1)
-                results_df = results_df[['Image', 'Title', 'ASIN']]  # Arrange columns as required
-                
-                st.markdown(results_df.to_html(escape=False, index=False), unsafe_allow_html=True)
-                
-                # Prepare DataFrame for download (without Image URL)
-                download_df = results_df[['Title', 'ASIN']].copy()
-                download_df['URL'] = [result['URL'] for result in st.session_state.results]
-                excel_buffer = BytesIO()
-                download_df.to_excel(excel_buffer, index=False, engine='openpyxl')
-                excel_buffer.seek(0)
-
-                # Download button for the Excel file
-                st.download_button(
-                    label="导出并下载Excel",
-                    data=excel_buffer,
-                    file_name="search_results.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                )
+                    st.download_button(
+                        label="导出并下载Excel",
+                        data=excel_buffer,
+                        file_name="search_results.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
+                else:
+                    st.write("未找到相关结果（已排除包含'sellercentral'的链接）")
             else:
-                st.write("未找到相关结果（已排除包含'sellercentral'的链接）")
-        else:
-            st.write("未找到相关结果")
+                st.write("未找到相关结果")
 
-    st.subheader("联系方式")
-    st.write("关注公众号“Hapince出海日记”")
-    st.image("image/publicwechat.jpg")
-
-    # Display the user count at the bottom left corner
-    user_count = int(open(USER_COUNT_FILE).read().strip())  # Read the current count
+    with col2:
+        st.subheader("联系方式")
+        st.write("关注公众号“Hapince出海日记”")
+        st.image("image/publicwechat.jpg")
+    
+    user_count = int(open(USER_COUNT_FILE).read().strip())
     display_user_count(user_count)
+
 
 USER_CREDENTIALS_FILE = "users.txt"
 
