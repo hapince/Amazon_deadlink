@@ -148,8 +148,11 @@ def main():
         ])
         keyword = st.text_input("输入关键词")
         max_links = st.slider("查询链接条数", 1, 30, 10)
-
-        if st.button("搜索"):
+        st.subheader("联系方式")
+        st.write("关注公众号“Hapince出海日记”")
+        st.image("image/publicwechat.jpg")
+        
+    if st.button("搜索"):
             all_results = fetch_all_results(keyword, amazon_site, max_links)
 
             if all_results:
@@ -191,12 +194,6 @@ def main():
             else:
                 st.write("未找到相关结果")
 
-    # 将联系信息和图片放在侧边栏
-    with st.sidebar:
-        st.subheader("联系方式")
-        st.write("关注公众号“Hapince出海日记”")
-        st.image("image/publicwechat.jpg")
-    
     user_count = int(open(USER_COUNT_FILE).read().strip())
     display_user_count(user_count)
 
