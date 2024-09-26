@@ -156,7 +156,6 @@ def main():
         st.title("僵尸链接采集")
         st.write("")
         st.write("")
-        st.write("")
         selected_site = st.selectbox("选择亚马逊站点", list(amazon_sites.values()))
         # 获取对应的英文站点
         amazon_site = list(amazon_sites.keys())[list(amazon_sites.values()).index(selected_site)]
