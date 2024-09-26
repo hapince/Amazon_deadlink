@@ -140,12 +140,23 @@ def main():
     st.title("亚马逊僵尸链接采集工具")
     st.write("遇到问题联系：happy_prince45")
     
+    # 创建亚马逊站点的映射
+    amazon_sites = {
+        "amazon.com": "美国站",
+        "amazon.ca": "加拿大站",
+        "amazon.co.uk": "英国站",
+        "www.amazon.com.au": "澳大利亚站",
+        "www.amazon.in": "印度站",
+        "www.amazon.sg": "新加坡站",
+        "www.amazon.ae": "阿联酋站"
+    }
+
     # 将输入部分放入侧边栏
     with st.sidebar:
-        amazon_site = st.selectbox("选择亚马逊站点", [
-            "amazon.com", "amazon.ca", "amazon.co.uk", "www.amazon.com.au", 
-            "www.amazon.in", "www.amazon.sg", "www.amazon.ae"
-        ])
+        selected_site = st.selectbox("选择亚马逊站点", list(amazon_sites.values()))
+        # 获取对应的英文站点
+        amazon_site = list(amazon_sites.keys())[list(amazon_sites.values()).index(selected_site)]
+        
         keyword = st.text_input("输入关键词")
         max_links = st.slider("查询链接条数", 1, 30, 10)
 
@@ -154,7 +165,7 @@ def main():
         st.subheader("联系方式")
         st.write("关注公众号“Hapince出海日记”")
         st.image("image/publicwechat.jpg")
-        
+
     # 当用户点击搜索按钮时执行搜索
     if search_button:
         all_results = fetch_all_results(keyword, amazon_site, max_links)
