@@ -153,7 +153,7 @@ def main():
 
     # 将输入部分放入侧边栏
     with st.sidebar:
-        st.title2("僵尸链接采集")
+        st.title("僵尸链接采集")
         selected_site = st.selectbox("选择亚马逊站点", list(amazon_sites.values()))
         # 获取对应的英文站点
         amazon_site = list(amazon_sites.keys())[list(amazon_sites.values()).index(selected_site)]
