@@ -148,9 +148,6 @@ def main():
         ])
         keyword = st.text_input("输入关键词")
         max_links = st.slider("查询链接条数", 1, 30, 10)
-        st.subheader("联系方式")
-        st.write("关注公众号“Hapince出海日记”")
-        st.image("image/publicwechat.jpg")
         
         # 搜索按钮放在侧边栏
         if st.button("搜索"):
@@ -194,7 +191,9 @@ def main():
                     st.write("未找到相关结果（已排除包含'sellercentral'的链接）")
             else:
                 st.write("未找到相关结果")
-
+        st.subheader("联系方式")
+        st.write("关注公众号“Hapince出海日记”")
+        st.image("image/publicwechat.jpg")
     user_count = int(open(USER_COUNT_FILE).read().strip())
     display_user_count(user_count)
 
