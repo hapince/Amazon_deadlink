@@ -138,7 +138,7 @@ def display_user_count(user_count):
 
 def main():
     st.title("亚马逊僵尸链接采集工具")
-    st.write("建议给主要关键词加上英文双引号，以提高搜索结果精确性。遇到问题请添加微信：hapince")
+    st.write("建议给主要关键词加上英文双引号，以提高搜索结果精确性。")
     
     # 创建亚马逊站点的映射
     amazon_sites = {
@@ -166,6 +166,7 @@ def main():
         search_button = st.button("搜索")
         st.subheader("联系方式")
         st.write("关注公众号“Hapince出海日记”")
+        st.write("遇到问题请添加微信：hapince")
         st.image("image/publicwechat.jpg")
 
     # 当用户点击搜索按钮时执行搜索
