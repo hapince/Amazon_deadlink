@@ -183,7 +183,7 @@ def main():
                 for title, link in filtered_results:
                     asin = extract_asin(link)
                     image_url = extract_image_url(asin) if asin else None
-                    image_tag = f'<img src="{image_url}" style="width:100px;height:100px;object-fit:cover;"/>' if image_url else f'<img src="/image/pdt.jpg" style="width:100px;height:100px;object-fit:cover;"/>'
+                    image_tag = f'<img src="{image_url}" style="width:100px;height:100px;object-fit:cover;"/>' if image_url else f'<img src="image/pdt.jpg" style="width:100px;height:100px;object-fit:cover;"/>'
                     st.session_state.results.append({"Image": image_tag, "Title": title, "URL": link, "ASIN": asin})
 
                 # 显示搜索结果在主区域
