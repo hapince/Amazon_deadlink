@@ -214,11 +214,7 @@ def main():
 
     user_count = int(open(USER_COUNT_FILE).read().strip())
     display_user_count(user_count)
-
-
-
-
-
+    
 USER_CREDENTIALS_FILE = "users.txt"
 
 def load_user_credentials():
