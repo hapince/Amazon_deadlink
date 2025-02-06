@@ -53,34 +53,51 @@ def fetch_all_results(keyword, amazon_site, max_links=50):
     """Fetch results until the desired number of links is reached."""
     page = 0
     all_results = []
+    retry_count = 3  # 添加重试次数
     
-    progress_bar = st.progress(0)  # Initialize progress bar
-
-    while len(all_results) < max_links:
-        # Set a random delay to mimic human behavior
-        delay = random.uniform(2, 5)
+    progress_bar = st.progress(0)
+    
+    # 添加搜索状态信息
+    status_placeholder = st.empty()
+    status_placeholder.text("准备开始搜索...")
+    
+    while len(all_results) < max_links and page < 5:  # 限制最大页数为5
+        status_placeholder.text(f"正在搜索第 {page + 1} 页...")
+        
+        # 添加较长的延迟以避免被封禁
+        delay = random.uniform(3, 7)
         time.sleep(delay)
         
         headers = {'User-Agent': get_random_user_agent()}
-        results = google_search(keyword, amazon_site, page, headers=headers)
         
-        # If no more results are found, break the loop
+        for attempt in range(retry_count):
+            try:
+                results = google_search(keyword, amazon_site, page, headers=headers)
+                if results:
+                    break
+                time.sleep(2)  # 如果没有结果，等待后重试
+            except Exception as e:
+                if attempt == retry_count - 1:  # 最后一次尝试
+                    st.error(f"搜索错误: {str(e)}")
+                    return all_results
+                time.sleep(2)
+                continue
+        
         if not results:
-            break
-
+            status_placeholder.text("本页未找到结果，尝试下一页...")
+            page += 1
+            continue
+            
         all_results.extend(results)
         
-        # If more results than needed, truncate the list
-        if len(all_results) > max_links:
-            all_results = all_results[:max_links]
-        
-        # Update progress bar
-        progress = len(all_results) / max_links
+        # 更新进度条
+        progress = min(len(all_results) / max_links, 1.0)
         progress_bar.progress(progress)
         
         page += 1
-
-    progress_bar.progress(1.0)  # Ensure the progress bar reaches 100%
+    
+    progress_bar.progress(1.0)
+    status_placeholder.text(f"搜索完成，共找到 {len(all_results)} 个结果")
     
     return all_results
 
