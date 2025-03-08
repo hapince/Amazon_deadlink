@@ -9,20 +9,6 @@ from bs4 import BeautifulSoup
 import os
 import json
 
-# List of user agents to randomize the header for each request
-def get_random_user_agent(self):
-        """获取随机User-Agent，模拟原始函数的get_random_user_agent()"""
-        user_agents = [
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15',
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:94.0) Gecko/20100101 Firefox/94.0',
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'
-        ]
-        return random.choice(user_agents)
-
-# Path to the file storing user count
-USER_COUNT_FILE = "user_count.txt"
-
 class GoogleCustomSearch:
     def __init__(self):
         """使用固定API Key和搜索引擎ID"""
@@ -61,7 +47,7 @@ class GoogleCustomSearch:
             
             # 添加随机User-Agent，模拟原始函数行为
             headers = {
-                'User-Agent': self._get_random_user_agent()
+                'User-Agent': self.get_random_user_agent()
             }
             
             # 添加延迟，模拟原始函数行为
@@ -102,6 +88,16 @@ class GoogleCustomSearch:
             # 保存调试信息
             st.write(f"Debug - 发生错误: {str(e)}")
             return []
+    
+    def get_random_user_agent(self):
+        """获取随机User-Agent，模拟原始函数的get_random_user_agent()"""
+        user_agents = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:94.0) Gecko/20100101 Firefox/94.0',
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'
+        ]
+        return random.choice(user_agents)
 
 def get_random_user_agent():
     """Return a random User-Agent from the list."""
