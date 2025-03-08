@@ -339,7 +339,7 @@ if __name__ == "__main__":
     else:
         st.markdown("""
     <div style="font-weight: bold; color: #ff0000; background-color: #f0f0f0; padding: 10px;">
-        为了给您提供更优质的服务，现需通过微信支付15元获取一周的完整使用权限（搜索次数不再受限）。感谢您的理解与支持！
+        为了提供更优质的服务，请扫码进入微信群免费获取账号密码
     </div>
 """, unsafe_allow_html=True)
-        st.image("image/wechat.jpg",width=300,caption="这是微信支付的图片")
+        st.image("image/wechat.jpg",width=300,caption="添加管理员微信")
