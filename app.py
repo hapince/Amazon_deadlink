@@ -249,7 +249,7 @@ def main():
         search_button = st.button("搜索")
         st.subheader("联系方式")
         st.write("遇到问题请添加微信：hapince")
-        st.write("关注公众号"Hapince出海日记"")
+        st.write("关注公众号\"Hapince出海日记\"")
         st.image("image/publicwechat.jpg")
 
     # 当用户点击搜索按钮时执行搜索
