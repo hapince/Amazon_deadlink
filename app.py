@@ -9,6 +9,9 @@ from bs4 import BeautifulSoup
 import os
 import json
 
+USER_COUNT_FILE = "user_count.txt"
+
+
 class GoogleCustomSearch:
     def __init__(self):
         """使用固定API Key和搜索引擎ID"""
