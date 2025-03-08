@@ -48,7 +48,7 @@ class GoogleCustomSearch:
         # 如果提供了网站，将其添加到查询中
         full_query = query
         if site:
-            full_query = f"{query} site:{site}"
+            full_query = f"{query} 'We don\'t know when or if this item will be back in stock.' site:{site}"
         
         params = {
             'key': self.api_key,
