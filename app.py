@@ -4,13 +4,26 @@ from io import BytesIO
 import time
 import random
 import requests
-import urllib.parse
 from bs4 import BeautifulSoup
 import os
 import json
 
-USER_COUNT_FILE = "user_count.txt"
+# List of user agents to randomize the header for each request
+USER_AGENTS = [
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0',
+    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36',
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
+    'Mozilla/5.0 (iPad; CPU OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/92.0.902.62',
+    'Mozilla/5.0 (Linux; Android 11; SM-G975F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36',
+    'Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15'
+]
 
+# Path to the file storing user count
+USER_COUNT_FILE = "user_count.txt"
 
 class GoogleCustomSearch:
     def __init__(self):
@@ -18,47 +31,35 @@ class GoogleCustomSearch:
         self.api_key = "AIzaSyBZW3AwzoW4d83NinvUKu78HD0MnE7Ccbg"
         self.cx = "0670ded1136164adf"
         self.base_url = "https://www.googleapis.com/customsearch/v1"
-        
-    def search(self, keyword, site, start_index=1, num=10):
+    
+    def search(self, query, site=None, start_index=1, num=10):
         """
-        使用Google Custom Search API进行搜索，查找带有特定短语的产品页面
+        使用Google Custom Search API进行搜索
         
         Args:
-            keyword (str): 搜索关键词
+            query (str): 搜索关键词
             site (str): 限制搜索的网站 (例如 "amazon.com")
-            start_index (int): 结果起始索引 (1-based，对应于页码*10)
+            start_index (int): 结果起始索引 (1-based)
             num (int): 每页结果数量 (最大值为10)
             
         Returns:
             list: 结果列表，每个结果为(标题, 链接)对
         """
-        search_results = []
+        # 如果提供了网站，将其添加到查询中
+        full_query = query
+        if site:
+            full_query = f"{query} site:{site}"
+        
+        params = {
+            'key': self.api_key,
+            'cx': self.cx,
+            'q': full_query,
+            'start': start_index,
+            'num': num
+        }
         
         try:
-            # 构造与原始函数相同的查询
-            full_query = f'site:{site} "We don\'t know when or if this item will be back in stock." {keyword}'
-            
-            params = {
-                'key': self.api_key,
-                'cx': self.cx,
-                'q': full_query,
-                'start': start_index,
-                'num': num
-            }
-            
-            st.write(f"Debug - 搜索URL: {self.base_url}?q={urllib.parse.quote(full_query)}&start={start_index}&num={num}")
-            
-            # 添加随机User-Agent，模拟原始函数行为
-            headers = {
-                'User-Agent': self.get_random_user_agent()
-            }
-            
-            # 添加延迟，模拟原始函数行为
-            time.sleep(2)
-            
-            response = requests.get(self.base_url, params=params, headers=headers, timeout=10)
-            st.write(f"Debug - 响应状态码: {response.status_code}")
-            
+            response = requests.get(self.base_url, params=params)
             if response.status_code != 200:
                 st.error(f"API请求失败: {response.status_code} - {response.text}")
                 return []
@@ -67,40 +68,19 @@ class GoogleCustomSearch:
             
             # 检查是否有搜索结果
             if 'items' not in data:
-                st.write("Debug - 未找到搜索结果")
                 return []
-            
-            st.write(f"Debug - 找到 {len(data['items'])} 个结果")
-            
-            # 处理结果，验证是否为有效的网站链接
+                
+            results = []
             for item in data['items']:
                 title = item.get('title', '')
                 link = item.get('link', '')
+                results.append((title, link))
                 
-                # 验证是否为有效的网站链接
-                if site in link and 'http' in link:
-                    if (title, link) not in search_results:  # 避免重复
-                        search_results.append((title, link))
-                        st.write(f"Debug - 找到有效结果: {title[:30]}... | {link[:50]}...")
-            
-            st.write(f"Debug - 最终找到 {len(search_results)} 个有效结果")
-            return search_results
+            return results
             
         except Exception as e:
             st.error(f"搜索过程中发生错误: {str(e)}")
-            # 保存调试信息
-            st.write(f"Debug - 发生错误: {str(e)}")
             return []
-    
-    def get_random_user_agent(self):
-        """获取随机User-Agent，模拟原始函数的get_random_user_agent()"""
-        user_agents = [
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15',
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:94.0) Gecko/20100101 Firefox/94.0',
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'
-        ]
-        return random.choice(user_agents)
 
 def get_random_user_agent():
     """Return a random User-Agent from the list."""
@@ -362,4 +342,4 @@ if __name__ == "__main__":
         为了提供更优质的服务，请扫码进入微信群免费获取账号密码
     </div>
 """, unsafe_allow_html=True)
-        st.image("image/wechat.jpg",width=300,caption="添加管理员微信")
+        st.image("image/wechat.jpg",width=300,caption="这是微信支付的图片")
