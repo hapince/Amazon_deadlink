@@ -129,7 +129,7 @@ def fetch_all_results(keyword, amazon_site, max_links=50):
         return []
         
     try:
-        while len(all_results) < max_links and page < 10:  # 限制最大页数为3
+        while len(all_results) < max_links and page < 10:  # 限制最大页数为10
             start_index = page * 10 + 1
             
             # Random delay between requests
@@ -232,7 +232,7 @@ def main():
         amazon_site = list(amazon_sites.keys())[list(amazon_sites.values()).index(selected_site)]
 
         keyword = st.text_input("输入关键词")
-        max_links = st.slider("查询链接条数", 1, 30, 10)
+        max_links = st.slider("查询链接条数", 1, 100, 10)
 
         # 搜索按钮放在侧边栏
         search_button = st.button("搜索")
