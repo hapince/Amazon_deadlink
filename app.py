@@ -157,8 +157,7 @@ def fetch_all_results(keyword, amazon_site, max_links=50):
         st.error(f"搜索过程中发生错误: {str(e)}")
     
     progress_bar.progress(1.0)
-    st.write(f"\n=== 搜索完成 ===")
-    st.write(f"总共找到: {len(all_results)} 个结果")
+    st.write(f"\n=== 采集完毕 ===")
     
     return all_results
 
