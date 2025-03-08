@@ -5,8 +5,8 @@ import time
 import random
 import requests
 from bs4 import BeautifulSoup
-from utils import google_search
 import os
+import json
 
 # List of user agents to randomize the header for each request
 USER_AGENTS = [
@@ -24,6 +24,63 @@ USER_AGENTS = [
 
 # Path to the file storing user count
 USER_COUNT_FILE = "user_count.txt"
+
+class GoogleCustomSearch:
+    def __init__(self):
+        """使用固定API Key和搜索引擎ID"""
+        self.api_key = "AIzaSyBZW3AwzoW4d83NinvUKu78HD0MnE7Ccbg"
+        self.cx = "0670ded1136164adf"
+        self.base_url = "https://www.googleapis.com/customsearch/v1"
+    
+    def search(self, query, site=None, start_index=1, num=10):
+        """
+        使用Google Custom Search API进行搜索
+        
+        Args:
+            query (str): 搜索关键词
+            site (str): 限制搜索的网站 (例如 "amazon.com")
+            start_index (int): 结果起始索引 (1-based)
+            num (int): 每页结果数量 (最大值为10)
+            
+        Returns:
+            list: 结果列表，每个结果为(标题, 链接)对
+        """
+        # 如果提供了网站，将其添加到查询中
+        full_query = query
+        if site:
+            full_query = f"{query} site:{site}"
+        
+        params = {
+            'key': self.api_key,
+            'cx': self.cx,
+            'q': full_query,
+            'start': start_index,
+            'num': num
+        }
+        
+        try:
+            response = requests.get(self.base_url, params=params)
+            if response.status_code != 200:
+                st.error(f"API请求失败: {response.status_code} - {response.text}")
+                return []
+            
+            data = response.json()
+            
+            # 检查是否有搜索结果
+            if 'items' not in data:
+                return []
+                
+            results = []
+            for item in data['items']:
+                title = item.get('title', '')
+                link = item.get('link', '')
+                results.append((title, link))
+                
+            return results
+            
+        except Exception as e:
+            st.error(f"搜索过程中发生错误: {str(e)}")
+            return []
 
 def get_random_user_agent():
     """Return a random User-Agent from the list."""
@@ -56,7 +113,7 @@ def extract_image_url(asin):
     return None
 
 def fetch_all_results(keyword, amazon_site, max_links=50):
-    """Fetch results until the desired number of links is reached."""
+    """Fetch results until the desired number of links is reached using Google Custom Search API."""
     page = 0
     all_results = []
     
@@ -65,6 +122,9 @@ def fetch_all_results(keyword, amazon_site, max_links=50):
     st.write(f"目标站点: {amazon_site}")
     
     progress_bar = st.progress(0)
+    
+    # 实例化Google Custom Search类
+    google_search = GoogleCustomSearch()
     
     # Validate inputs
     if not keyword or not amazon_site:
@@ -75,14 +135,15 @@ def fetch_all_results(keyword, amazon_site, max_links=50):
         while len(all_results) < max_links and page < 3:  # 限制最大页数为3
             st.write(f"\n--- 正在搜索第 {page + 1} 页 ---")
             
+            # 计算起始索引
+            start_index = page * 10 + 1
+            
             # Random delay between requests
             delay = random.uniform(2, 4)
             time.sleep(delay)
             
-            # Rotate user agents
-            headers = {'User-Agent': get_random_user_agent()}
-            
-            results = google_search(keyword, amazon_site, page, headers=headers)
+            # 执行搜索
+            results = google_search.search(keyword, amazon_site, start_index, num=10)
             
             if results:
                 st.write(f"本页找到 {len(results)} 个结果")
@@ -111,10 +172,6 @@ def fetch_all_results(keyword, amazon_site, max_links=50):
     
     return all_results
 
-import os
-
-USER_COUNT_FILE = "user_count.txt"
-
 def update_user_count(increment=1):
     """
     Update and return the current user count by a specified increment.
@@ -139,7 +196,6 @@ def update_user_count(increment=1):
         f.write(str(user_count))
     
     return user_count
-
 
 def display_user_count(user_count):
     """Display the user count at the bottom left corner without overlapping."""
@@ -193,7 +249,7 @@ def main():
         search_button = st.button("搜索")
         st.subheader("联系方式")
         st.write("遇到问题请添加微信：hapince")
-        st.write("关注公众号“Hapince出海日记”")
+        st.write("关注公众号"Hapince出海日记"")
         st.image("image/publicwechat.jpg")
 
     # 当用户点击搜索按钮时执行搜索
@@ -239,8 +295,10 @@ def main():
         else:
             st.write("未找到相关结果")
 
-    user_count = int(open(USER_COUNT_FILE).read().strip())
-    display_user_count(user_count)
+    # 显示用户计数器
+    if os.path.exists(USER_COUNT_FILE):
+        user_count = int(open(USER_COUNT_FILE).read().strip())
+        display_user_count(user_count)
     
 USER_CREDENTIALS_FILE = "users.txt"
 
