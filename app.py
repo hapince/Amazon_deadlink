@@ -116,10 +116,7 @@ def fetch_all_results(keyword, amazon_site, max_links=50):
     """Fetch results until the desired number of links is reached using Google Custom Search API."""
     page = 0
     all_results = []
-    
-    st.write("=== 开始搜索 ===")
-    st.write(f"关键词: {keyword}")
-    st.write(f"目标站点: {amazon_site}")
+    st.write(f"关键词: {keyword} 目标站点: {amazon_site}")
     
     progress_bar = st.progress(0)
     
@@ -132,10 +129,7 @@ def fetch_all_results(keyword, amazon_site, max_links=50):
         return []
         
     try:
-        while len(all_results) < max_links and page < 3:  # 限制最大页数为3
-            st.write(f"\n--- 正在搜索第 {page + 1} 页 ---")
-            
-            # 计算起始索引
+        while len(all_results) < max_links and page < 10:  # 限制最大页数为3
             start_index = page * 10 + 1
             
             # Random delay between requests
@@ -146,15 +140,11 @@ def fetch_all_results(keyword, amazon_site, max_links=50):
             results = google_search.search(keyword, amazon_site, start_index, num=10)
             
             if results:
-                st.write(f"本页找到 {len(results)} 个结果")
                 all_results.extend(results)
-                
                 if len(all_results) >= max_links:
                     all_results = all_results[:max_links]
                     break
             else:
-                st.write("本页未找到结果")
-                # Don't break immediately, try next page
                 if page >= 2:  # If we've tried 3 pages with no results, then stop
                     break
             
