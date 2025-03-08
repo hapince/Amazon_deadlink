@@ -31,35 +31,47 @@ class GoogleCustomSearch:
         self.api_key = "AIzaSyBZW3AwzoW4d83NinvUKu78HD0MnE7Ccbg"
         self.cx = "0670ded1136164adf"
         self.base_url = "https://www.googleapis.com/customsearch/v1"
-    
-    def search(self, query, site=None, start_index=1, num=10):
+        
+    def search(self, keyword, site, start_index=1, num=10):
         """
-        使用Google Custom Search API进行搜索
+        使用Google Custom Search API进行搜索，查找带有特定短语的产品页面
         
         Args:
-            query (str): 搜索关键词
+            keyword (str): 搜索关键词
             site (str): 限制搜索的网站 (例如 "amazon.com")
-            start_index (int): 结果起始索引 (1-based)
+            start_index (int): 结果起始索引 (1-based，对应于页码*10)
             num (int): 每页结果数量 (最大值为10)
             
         Returns:
             list: 结果列表，每个结果为(标题, 链接)对
         """
-        # 如果提供了网站，将其添加到查询中
-        full_query = query
-        if site:
-            full_query = f"{query} site:{site}"
-        
-        params = {
-            'key': self.api_key,
-            'cx': self.cx,
-            'q': full_query,
-            'start': start_index,
-            'num': num
-        }
+        search_results = []
         
         try:
-            response = requests.get(self.base_url, params=params)
+            # 构造与原始函数相同的查询
+            full_query = f'site:{site} "We don\'t know when or if this item will be back in stock." {keyword}'
+            
+            params = {
+                'key': self.api_key,
+                'cx': self.cx,
+                'q': full_query,
+                'start': start_index,
+                'num': num
+            }
+            
+            st.write(f"Debug - 搜索URL: {self.base_url}?q={urllib.parse.quote(full_query)}&start={start_index}&num={num}")
+            
+            # 添加随机User-Agent，模拟原始函数行为
+            headers = {
+                'User-Agent': self._get_random_user_agent()
+            }
+            
+            # 添加延迟，模拟原始函数行为
+            time.sleep(2)
+            
+            response = requests.get(self.base_url, params=params, headers=headers, timeout=10)
+            st.write(f"Debug - 响应状态码: {response.status_code}")
+            
             if response.status_code != 200:
                 st.error(f"API请求失败: {response.status_code} - {response.text}")
                 return []
@@ -68,18 +80,29 @@ class GoogleCustomSearch:
             
             # 检查是否有搜索结果
             if 'items' not in data:
+                st.write("Debug - 未找到搜索结果")
                 return []
-                
-            results = []
+            
+            st.write(f"Debug - 找到 {len(data['items'])} 个结果")
+            
+            # 处理结果，验证是否为有效的网站链接
             for item in data['items']:
                 title = item.get('title', '')
                 link = item.get('link', '')
-                results.append((title, link))
                 
-            return results
+                # 验证是否为有效的网站链接
+                if site in link and 'http' in link:
+                    if (title, link) not in search_results:  # 避免重复
+                        search_results.append((title, link))
+                        st.write(f"Debug - 找到有效结果: {title[:30]}... | {link[:50]}...")
+            
+            st.write(f"Debug - 最终找到 {len(search_results)} 个有效结果")
+            return search_results
             
         except Exception as e:
             st.error(f"搜索过程中发生错误: {str(e)}")
+            # 保存调试信息
+            st.write(f"Debug - 发生错误: {str(e)}")
             return []
 
 def get_random_user_agent():
