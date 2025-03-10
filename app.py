@@ -342,4 +342,4 @@ if __name__ == "__main__":
         为了提供更优质的服务，请扫码进入微信群免费获取账号密码
     </div>
 """, unsafe_allow_html=True)
-        st.image("image/wechat.jpg",width=300,caption="扫码添加管理员微信")
+        st.image("image/wechat.jpg",width=300,caption="扫码添加管理员微信!")
