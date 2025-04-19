@@ -339,7 +339,7 @@ if __name__ == "__main__":
     else:
         st.markdown("""
     <div style="font-weight: bold; color: #ff0000; background-color: #f0f0f0; padding: 10px;">
-        为了提供更优质的服务，请扫码进入微信群免费获取账号密码
+        为了提供更优质的服务，请扫码添加客服微信获取账号密码
     </div>
 """, unsafe_allow_html=True)
         st.image("image/wechat.jpg",width=300,caption="扫码添加管理员微信!")
